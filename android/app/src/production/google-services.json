@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "1041066486499",
+    "project_id": "hoora-fb944",
+    "storage_bucket": "hoora-fb944.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041066486499:android:8c4195984c310fdd3133d6",
+        "android_client_info": {
+          "package_name": "app.hoora"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1041066486499-13v6pv5gpkcjbm711tjp0sd5r3mk0tkl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.hoora",
+            "certificate_hash": "cc89fc7e2d69b368e33edfd11829002b5e91fff5"
+          }
+        },
+        {
+          "client_id": "1041066486499-bq67mqkt06gcirqmobt5d53knfkrq0uj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKG6rO9BxSQBEUe2G0P8NmEhTCfb7j-xg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1041066486499-bq67mqkt06gcirqmobt5d53knfkrq0uj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1041066486499-f33db4fta01p2c8i36q9ohsiqtvkfsit.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.hoora"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

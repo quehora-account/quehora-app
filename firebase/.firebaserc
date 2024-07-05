@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "hoora-fb944",
+    "staging": "hoora-staging"
+  },
+  "targets": {},
+  "etags": {}
+}

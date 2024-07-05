@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "272282529253",
+    "project_id": "hoora-staging",
+    "storage_bucket": "hoora-staging.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:272282529253:android:71b39bb2264393b991130c",
+        "android_client_info": {
+          "package_name": "app.hoora.staging"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "272282529253-cqt53gsoq14hdm6o2hh6jv73tjd168b0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGAYDKnNw2HT2mjUApfp-wM47y971eKkE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "272282529253-cqt53gsoq14hdm6o2hh6jv73tjd168b0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "272282529253-g8ih8lr94hd7de86fkgi98r4o9o6hk7i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.hoora.staging"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
