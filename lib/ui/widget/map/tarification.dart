@@ -11,7 +11,7 @@ class Tarification extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         width: 100,
         child: Column(children: [
       SvgPicture.asset(svgPath),

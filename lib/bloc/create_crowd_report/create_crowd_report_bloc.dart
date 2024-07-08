@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hoora/common/alert.dart';
 import 'package:hoora/repository/crowd_report_repository.dart';
