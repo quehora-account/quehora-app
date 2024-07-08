@@ -8,8 +8,7 @@ class CrowdReportRepository {
   FirebaseFirestore instance = FirebaseFirestore.instance;
   final FirebaseAuth authInstance = FirebaseAuth.instance;
 
-  Future<void> createCrowdReport(String spotId, int intensity, String duration,
-      GeoPoint coordinates) async {
+  Future<void> createCrowdReport(String spotId, int intensity, String duration) async {
     // final url = Uri.parse('http://127.0.0.1:5001/hoora-fb944/us-central1/createCrowdReport');
     final url = QuehoraActiveFlavor.activeFlavor == Flavor.production
         ? Uri.parse('https://createcrowdreport-nmciz2db3a-uc.a.run.app')
@@ -19,8 +18,7 @@ class CrowdReportRepository {
       body: {
         'spotId': spotId,
         'intensity': intensity.toString(),
-        'duration': duration,
-        'coordinates': coordinates.toString(),
+        'duration': duration
       },
       headers: {
         "authorization": "Bearer ${await authInstance.currentUser!.getIdToken()}",

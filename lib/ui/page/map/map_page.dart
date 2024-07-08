@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:hoora/bloc/first_launch/first_launch_bloc.dart';
 import 'package:hoora/bloc/map/map_bloc.dart';
 import 'package:hoora/common/decoration.dart';
 import 'package:hoora/model/city_model.dart';
@@ -18,6 +20,7 @@ import 'package:hoora/ui/widget/playlist_card.dart';
 import 'package:hoora/ui/widget/map/spot_marker.dart';
 import 'package:hoora/ui/widget/map/spot_sheet.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:app_settings/app_settings.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -35,6 +38,9 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
+
+    context.read<FirstLaunchBloc>().add(RequestGeolocation());
+    
     /// Update user position
     Geolocator.getPositionStream().listen((Position? position) {
       if (position != null) {
@@ -53,6 +59,7 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
+
     super.build(context);
 
     return BlocConsumer<MapBloc, MapState>(
@@ -85,11 +92,9 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
           ),
           children: [
           TileLayer(urlTemplate: context.read<MapBloc>().mapBoxUrl),
-            MarkerLayer(
-              markers: buildSpotMarkers(),
-            ),
 
-            /// User position marker
+          MarkerLayer(markers: buildSpotMarkers()),
+
             MarkerLayer(
               markers: [
                 if (userPosition != null)
@@ -108,29 +113,7 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
                     ),
                   ),
               ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 50),
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: kPrimary.withOpacity(0.75),
-                    borderRadius: BorderRadius.circular(
-                      kRadius10,
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(kPadding10),
-                    child: Text(
-                      "Consultez les dernières affluences signalées\nChoisissez un site et validez votre visite !",
-                      style: kRegularNunito14.copyWith(color: Colors.white),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+          ),
 
             /// Gem profile button
             const SafeArea(
@@ -155,7 +138,80 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
                   buildRegionButton(),
                 ],
               ),
-            ))
+          )),
+
+          BlocConsumer<FirstLaunchBloc, FirstLaunchState>(
+              listener: (context, state) {},
+              builder: (context, state) {
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 50),
+                  padding: const EdgeInsets.symmetric(horizontal: kPadding20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (state is GeolocationForeverDenied)
+                        Container(
+                          padding: const EdgeInsets.only(
+                              left: 15, right: 15, top: 15, bottom: 10),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFCECAFF),
+                            borderRadius: BorderRadius.circular(kRadius10),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Veuillez autoriser la localisation pour découvrir les lieux autour de vous et valider vos visites en heure creuse.",
+                                style: kRegularNunito16.copyWith(
+                                  color: kDarkBackground,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                              const SizedBox(height: 5),
+                              ElevatedButton(
+                                onPressed: () => AppSettings.openAppSettings(),
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 1,
+                                  backgroundColor: const Color(0xFFC5F8DC),
+                                  shape: const StadiumBorder(),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 10),
+                                  minimumSize: Size.zero,
+                                ),
+                                child: Text(
+                                  "Ouvrir les réglages",
+                                  style: kBoldNunito16.copyWith(
+                                      color: kDarkBackground),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      if (state is! GeolocationForeverDenied)
+                        Container(
+                          decoration: BoxDecoration(
+                            color: kPrimary.withOpacity(0.75),
+                            borderRadius: BorderRadius.circular(
+                              kRadius10,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(kPadding10),
+                            child: Text(
+                              "Consultez les dernières affluences signalées\nChoisissez un site et validez votre visite !",
+                              style: kRegularNunito14.copyWith(
+                                  color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              }),
+
           ],
         );
     }

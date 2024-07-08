@@ -100,7 +100,7 @@ class _NicknamePageState extends State<NicknamePage> {
                         style: kRegularNunito18,
                         decoration: kTextFieldStyle.copyWith(hintText: ""),
                         controller: nicknameController,
-                        validator: Validator.isNotEmpty,
+                        validator: Validator.nicknameHasGoodFormat,
                       ),
                       const SizedBox(height: kPadding20),
                       SizedBox(

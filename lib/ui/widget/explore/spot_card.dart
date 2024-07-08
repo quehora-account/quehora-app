@@ -17,8 +17,6 @@ class SpotCard extends StatelessWidget {
   Widget build(BuildContext context) {
     DateTime selectedDate = context.read<ExploreBloc>().selectedDate;
 
-    print(selectedDate);
-
     return Container(
       height: 120,
       width: double.infinity,

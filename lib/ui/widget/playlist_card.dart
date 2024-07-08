@@ -13,8 +13,8 @@ class PlaylistCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50,
-      width: 50,
+      height: 51,
+      width: 51,
       decoration: BoxDecoration(
         color: selectedPlaylist != null && playlist.id == selectedPlaylist!.id ? kSecondary : kUnselected,
         border: Border.all(color: Colors.white, width: 2),

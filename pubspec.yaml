@@ -2,7 +2,7 @@ name: hoora
 description: "A new Flutter project."
 publish_to: 'none'
 
-version: 1.9.0+34
+version: 1.13.0+38
 
 environment:
   sdk: '>=3.3.3 <4.0.0'
@@ -35,6 +35,8 @@ dependencies:
   slider_button: ^2.1.0
   http: ^1.2.1
   google_fonts: ^6.2.1
+  app_settings: ^5.1.1
+
     
 dev_dependencies:
   flutter_test:

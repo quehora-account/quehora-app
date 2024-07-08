@@ -7,6 +7,7 @@ const Color kPrimary3 = Color.fromRGBO(206, 202, 255, 1);
 const Color kSecondary = Color.fromRGBO(197, 248, 220, 1);
 // const Color kBackground = Color.fromRGBO(249, 250, 251, 1);
 const Color kBackground = Colors.white;
+const Color kDarkBackground = Color(0xFF0E1626);
 const Color kNavigationIconSelected = Color.fromRGBO(161, 154, 255, 1);
 const Color kUnselected = Color.fromRGBO(241, 240, 255, 1);
 const Color kGemsIndicator = Color.fromRGBO(241, 240, 255, 1);
@@ -202,6 +203,15 @@ const TextStyle kRegularNunito18 = TextStyle(
   color: kPrimary,
   height: 1,
 );
+
+const TextStyle kRegularNunito19 = TextStyle(
+  fontFamily: "Nunito",
+  fontSize: 19,
+  fontWeight: FontWeight.w400,
+  color: kPrimary,
+  height: 1,
+);
+
 
 const TextStyle kRegularNunito32 = TextStyle(
   fontFamily: "Nunito",

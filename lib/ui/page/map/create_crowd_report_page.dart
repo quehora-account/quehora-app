@@ -30,7 +30,6 @@ class _CreateCrowdReportPageState extends State<CreateCrowdReportPage> {
   int hour = 0;
   int minute = 0;
   int intensity = 1;
-  GeoPoint coordinates = GeoPoint(0, 0);
   LatLng? userPosition;
 
   @override
@@ -42,8 +41,6 @@ class _CreateCrowdReportPageState extends State<CreateCrowdReportPage> {
       if (position != null) {
         setState(() {
           userPosition = LatLng(position.latitude, position.longitude);
-          coordinates =
-              GeoPoint(userPosition!.latitude, userPosition!.longitude);
         });
       }
     });
@@ -242,7 +239,6 @@ class _CreateCrowdReportPageState extends State<CreateCrowdReportPage> {
                                     duration: "$hour:$minute",
                                     spotId: widget.spot.id,
                                     intensity: intensity,
-                                    coordinates: coordinates,
                                   ),
                                 );
                           },

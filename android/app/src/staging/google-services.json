@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "272282529253-d0mt82p111b3vpet6flbvr8upa913un4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.hoora.staging",
+            "certificate_hash": "84cbbde1f3d4ac95fc6ffd6e377649844c513db0"
+          }
+        },
+        {
           "client_id": "272282529253-cqt53gsoq14hdm6o2hh6jv73tjd168b0.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hoora/bloc/auth/auth_bloc.dart';
 import 'package:hoora/bloc/challenge/challenge_bloc.dart' as challenge_bloc;
 import 'package:hoora/bloc/explore/explore_bloc.dart' as explore_bloc;
 import 'package:hoora/bloc/first_launch/first_launch_bloc.dart'
@@ -63,7 +65,20 @@ class _HomePageState extends State<HomePage> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Navigation(
-                onChanged: (page) {
+                onChanged: (page) async {
+                  try {
+                    await FirebaseAuth.instance.currentUser!.reload();
+                  } catch (e) {
+                    setState(() {
+                      context.read<AuthBloc>().add(SignOut());
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        "/auth/sign_up",
+                        (route) => false,
+                      );
+                    });
+                  }
+
                   setState(() {
                     context.read<user_bloc.UserBloc>().add(user_bloc.Init());
                     if (page == 1) context.read<offer_bloc.OfferBloc>().add(offer_bloc.Init());
@@ -80,6 +95,9 @@ class _HomePageState extends State<HomePage> {
                     if (page == 4) context.read<ranking_bloc.RankingBloc>().add(ranking_bloc.Init());
                     controller.jumpToPage(page);
                     SystemChrome.setSystemUIOverlayStyle(page == 2 ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
+                    
+
+
                   });
                 },
               ),

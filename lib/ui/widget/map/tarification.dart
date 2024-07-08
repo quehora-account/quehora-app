@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hoora/common/decoration.dart';
 import 'package:hoora/model/tarification_model.dart';
@@ -10,11 +11,14 @@ class Tarification extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
+    return Container(
+        width: 100,
+        child: Column(children: [
       SvgPicture.asset(svgPath),
       const SizedBox(height: kPadding5),
       Text(data.price, style: kBoldNunito12),
-      Text(data.condition, style: kRegularNunito12),
-    ]);
+          Text(data.condition,
+              style: kRegularNunito12, textAlign: TextAlign.center),
+        ]));
   }
 }

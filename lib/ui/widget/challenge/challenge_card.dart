@@ -193,38 +193,26 @@ class _ChallengeCardState extends State<ChallengeCard> {
     }
 
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: kPadding10),
       height: 30,
-      width: 70,
       decoration: BoxDecoration(
         color: kGemsIndicator,
         borderRadius: BorderRadius.circular(kRadius100),
       ),
-      child: Row(
+      child: Wrap(
+        direction: Axis.horizontal,
+        runAlignment: WrapAlignment.center,
+        spacing: 5,
         children: [
-          SizedBox(
-            width: 35,
-            height: 30,
-            child: Center(
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  widget.challenge.gem.toString(),
-                  style: kBoldARPDisplay13,
-                ),
-              ),
-            ),
+          Text(
+            widget.challenge.gem.toString(),
+            style: kBoldARPDisplay13,
           ),
-          SizedBox(
-            height: 30,
-            width: 35,
-            child: Center(
-                child: Padding(
-              padding: const EdgeInsets.only(right: kPadding5),
+          Center(
               child: SvgPicture.asset(
                 "assets/svg/gem.svg",
                 height: 15,
-              ),
-            )),
+            ),
           ),
         ],
       ),

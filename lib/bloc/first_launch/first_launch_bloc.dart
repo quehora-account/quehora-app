@@ -34,6 +34,11 @@ class FirstLaunchBloc extends Bloc<FirstLaunchEvent, FirstLaunchState> {
       }
     }
 
+    if (permission == LocationPermission.deniedForever) {
+      emit(GeolocationForeverDenied());
+      return;
+    }
+
     emit(GeolocationAccepted());
   }
 }

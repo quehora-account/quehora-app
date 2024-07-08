@@ -23,14 +23,11 @@ class SignUpGiftGemsPage extends StatelessWidget {
                   style: kBoldARPDisplay25,
                 ),
                 const Spacer(),
-                const FractionallySizedBox(
-                  widthFactor: 0.45,
-                  child: Text(
-                    "Votre cadeau de bienvenue",
+                const Text(
+                    "On vous offre 15 Diamz pour\nbien commencer votre\naventure avec nous !",
                     style: kBoldARPDisplay14,
                     textAlign: TextAlign.center,
                   ),
-                ),
                 const SizedBox(height: kPadding20),
                 SizedBox(
                   height: 125,

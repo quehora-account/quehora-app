@@ -1,17 +1,23 @@
-import 'package:hoora/repository/map_box_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AppConstants {
   static const String kSSKeyFirstLaunch = "FIRST_LAUNCH";
 
-  static Future<String> get mapIdFuture => MapBoxService().mapIdStream!.first;
-
   static Future<String> getMapBoxUrl() async {
-    String mapId = "clvnneyyd01ks01qp8yap3v7t";
-    try {
-      mapId = await mapIdFuture;
-    } catch (e) {
-      print('Failed to load map ID: $e');
-    }
+    var mapId = await FirebaseFirestore.instance
+        .collection('constant') // Remplacez par le nom de votre collection
+        .doc('activeMapBox')
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        return documentSnapshot.get('url');
+      } else {
+        return 'clulcc0x700le01nt1509c14f'; // Valeur par défaut si le document n'existe pas
+      }
+    });
+
     return "https://api.mapbox.com/styles/v1/devhoora/$mapId/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiZGV2aG9vcmEiLCJhIjoiY2x1bGMwcXQxMGpxNTJrbHcwMHlsb2FkMiJ9.QeSomxVwnjxWJBmmJA__FA";
+
   }
+
 }

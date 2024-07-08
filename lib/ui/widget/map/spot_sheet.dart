@@ -103,6 +103,7 @@ class _SpotSheetState extends State<SpotSheet> {
             SizedBox(
               height: 50,
               child: ElevatedButton(
+                
                 style: ElevatedButton.styleFrom(
                   shadowColor: Colors.transparent,
                   backgroundColor: Colors.white,
@@ -158,8 +159,12 @@ class _SpotSheetState extends State<SpotSheet> {
                     width: constraint.maxWidth + 25,
                     backgroundColor: kPrimary,
                     alignLabel: const Alignment(0, 0),
-                    shimmer: false,
+                    shimmer: !(!isInCircleRadius ||
+                        getGems() == 0 ||
+                        widget.spot
+                            .isClosedAt(DateTime.now(), onlyHour: false)),
                     vibrationFlag: false,
+                    baseColor: Colors.white.withOpacity(0.5),
                     action: () async {
                       await Navigator.push(
                         context,

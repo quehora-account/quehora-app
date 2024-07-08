@@ -31,25 +31,27 @@ class RequestGeolocationPage extends StatelessWidget {
                   return Column(
                     children: [
                       SizedBox(height: constraints.maxHeight * 0.25),
-                      SizedBox(
+                      Container(
                         height: constraints.maxHeight * 0.25,
+                        padding: const EdgeInsets.only(bottom: 20),
                         child: Align(
+                          alignment: Alignment.bottomCenter,
                           child: Lottie.asset(
                             "assets/animations/gps.json",
-                            height: 100,
-                            width: 100,
+                            height: 80,
+                            width: 80,
                           ),
                         ),
                       ),
                       const Text(
-                        "Votre position",
+                        "Votre Position",
                         style: kBoldARPDisplay25,
                       ),
                       const SizedBox(height: kPadding5),
                       const FractionallySizedBox(
                         widthFactor: 0.9,
                         child: Text(
-                          "Pour vous proposer les meilleurs sites autours de vous, Quehora a besoin d'accèder à votre position géographique.",
+                          "Pour vous proposer les meilleurs sites touristiques autours de vous, Quehora a besoin d'accèder à votre position géographique.",
                           style: kRegularNunito20,
                           textAlign: TextAlign.center,
                         ),

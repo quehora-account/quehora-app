@@ -126,6 +126,11 @@ class ProjectPage extends StatelessWidget {
                     const SizedBox(height: kPadding20),
 
                     if (canDonate) buildDonationButtons(context),
+                    if (!canDonate)
+                      const Center(
+                          child: Text(
+                              "Vous avez déjà contribué pour ce projet. Merci !",
+                              style: kRegularNunito12))
                   ],
                 ),
               ),
@@ -292,7 +297,8 @@ class ProjectPage extends StatelessWidget {
                           ? null
                           : () {
                               if (context.read<UserBloc>().user.gem < gem) {
-                                Alert.showSuccess(context, "Vous n'avez pas assez de diamants.");
+                                Alert.showSuccess(
+                                    context, "Vous n'avez pas assez de Diamz.");
                               } else {
                                 context.read<ProjectBloc>().add(Donate(project: project, gem: gem));
                               }

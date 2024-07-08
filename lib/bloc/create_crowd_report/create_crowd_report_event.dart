@@ -12,11 +12,10 @@ final class CreateCrowdReport extends CreateCrowdReportEvent {
   final String duration;
   final String spotId;
   final int intensity;
-  final GeoPoint coordinates;
 
   CreateCrowdReport(
       {required this.duration,
       required this.spotId,
       required this.intensity,
-      required this.coordinates});
+      });
 }

@@ -168,7 +168,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         style: kRegularNunito18,
                         decoration: kTextFieldStyle.copyWith(hintText: ""),
                         controller: nicknameController,
-                        validator: Validator.isNotEmpty,
+                        validator: Validator.nicknameHasGoodFormat,
                         maxLength: 10,
                       ),
                       const SizedBox(height: kPadding20),
