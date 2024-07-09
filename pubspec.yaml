@@ -2,7 +2,7 @@ name: hoora
 description: "A new Flutter project."
 publish_to: 'none'
 
-version: 1.14.0+39
+version: 1.14.3+42
 
 environment:
   sdk: '>=3.3.3 <4.0.0'
@@ -36,6 +36,7 @@ dependencies:
   http: ^1.2.1
   google_fonts: ^6.2.1
   app_settings: ^5.1.1
+  firebase_app_check: ^0.2.2+7
 
     
 dev_dependencies:
