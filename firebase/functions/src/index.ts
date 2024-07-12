@@ -30,6 +30,7 @@ import {onSchedule} from "firebase-functions/v2/scheduler";
 import {SpotRepository} from "./repository/spot.repository";
 import {CreateLevelDto} from "./common/dto/create_level.dto";
 import {LevelService} from "./service/level.service";
+import { ValidateSpotDto } from "./common/dto/validation_spot.dto";
 
 // TODO: Upgrade body validation
 // TODO: Catch crashes
@@ -246,27 +247,29 @@ export const debugging = v2.https.onRequest(async (request, response) => {
  */
 export const validateSpot = v2.https.onRequest(async (request, response) => {
   try {
+
     // Extract parameters
     const decodedIdToken = await verifyIdToken(request);
     const userId = decodedIdToken.uid;
     const spotId : string = request.body.spotId;
+    const dto = ValidateSpotDto.fromJson(request.body);
 
-    await SpotService.validate(userId, spotId);
+    await SpotService.validate(userId, spotId, dto);
 
-    response.json({status: "OK"});
+    const responseData = { status: "OK" };
+    response.json(responseData);
 
     ChallengeService.trigger(userId, ["1", "2", "3", "4", "8", "9"]);
   } catch (e) {
-    response.json({status: "KO", error: e});
+    const errorData = { status: "KO", error: e };
+    console.error("Error occurred:", e);
+    response.json(errorData);
   }
 });
 
-/**
- * Create crowd report
- * Replace last crowd report of attached spot
- */
-export const createCrowdReport = v2.https.onRequest(async ( request, response) => {
+export const createCrowdReport = v2.https.onRequest(async (request, response) => {
   try {
+
     // Extract parameters
     const decodedIdToken = await verifyIdToken(request);
     const userId = decodedIdToken.uid;
@@ -276,12 +279,14 @@ export const createCrowdReport = v2.https.onRequest(async ( request, response) =
 
     ChallengeService.trigger(userId, ["10", "11", "12", "13"]);
 
-    response.json({status: "OK"});
+    const responseData = { status: "OK" };
+    response.json(responseData);
   } catch (e) {
-    response.json({status: "KO", error: e});
+    const errorData = { status: "KO", error: e };
+    console.error("Error occurred:", e);
+    response.json(errorData);
   }
 });
-
 /**
  * Unlocked offer
  */

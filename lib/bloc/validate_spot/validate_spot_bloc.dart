@@ -31,7 +31,7 @@ class ValidateSpotBloc extends Bloc<ValidateSpotEvent, ValidateSpotState> {
         emit(SpotAlreadyValidated());
         return;
       }
-      await spotRepository.validateSpot(event.spot);
+      await spotRepository.validateSpot(event.spot, event.coordinates);
       emit(ValidateSpotSuccess(gems: event.spot.getGemsNow()));
     } catch (exception, stack) {
       /// Report crash to Crashlytics

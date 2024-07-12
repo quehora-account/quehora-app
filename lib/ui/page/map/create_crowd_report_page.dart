@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,21 +32,33 @@ class _CreateCrowdReportPageState extends State<CreateCrowdReportPage> {
   int minute = 0;
   int intensity = 1;
   LatLng? userPosition;
+  StreamSubscription<Position>? positionStream;
 
   @override
   void initState() {
     super.initState();
 
+    userPosition = LatLng(0, 0);
+
     /// Update user position
-    Geolocator.getPositionStream().listen((Position? position) {
+    positionStream =
+        Geolocator.getPositionStream().listen((Position? position) {
       if (position != null) {
-        setState(() {
-          userPosition = LatLng(position.latitude, position.longitude);
-        });
+        if (mounted) {
+          setState(() {
+            userPosition = LatLng(position.latitude, position.longitude);
+          });
+        }
       }
     });
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     context.read<CreateCrowdReportBloc>().add(IsAlreadyReported(spotId: widget.spot.id));
+  }
+
+  @override
+  void dispose() {
+    positionStream?.cancel();
+    super.dispose();
   }
 
   @override
@@ -238,6 +252,10 @@ class _CreateCrowdReportPageState extends State<CreateCrowdReportPage> {
                                     duration: "$hour:$minute",
                                     spotId: widget.spot.id,
                                     intensity: intensity,
+                                      coordinates: [
+                                        userPosition!.latitude,
+                                        userPosition!.longitude
+                                      ]
                                   ),
                                 );
                           },

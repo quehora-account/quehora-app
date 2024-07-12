@@ -19,11 +19,11 @@ class SpotValidationPage extends StatefulWidget {
 }
 
 class _SpotValidationPageState extends State<SpotValidationPage> {
+
   @override
   void initState() {
     super.initState();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
-    context.read<ValidateSpotBloc>().add(ValidateSpot(spot: widget.spot));
   }
 
   @override

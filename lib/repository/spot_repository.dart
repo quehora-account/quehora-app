@@ -51,13 +51,16 @@ class SpotRepository {
     return createdAt.day == end.day;
   }
 
-  Future<void> validateSpot(Spot spot) async {
+  Future<void> validateSpot(Spot spot, List coordinates) async {
     final url = QuehoraActiveFlavor.activeFlavor == Flavor.production
         ? Uri.parse('https://validatespot-nmciz2db3a-uc.a.run.app')
         : Uri.parse('https://validatespot-5lgw4vxlaa-uc.a.run.app');
     await http.post(
       url,
-      body: {'spotId': spot.id},
+      body: {
+        'spotId': spot.id,
+        'coordinates': coordinates.toString(),
+      },
       headers: {
         "authorization": "Bearer ${await authInstance.currentUser!.getIdToken()}",
       },

@@ -1,4 +1,5 @@
-import {DocumentData} from "firebase-admin/firestore";
+import { DocumentData } from "firebase-admin/firestore";
+import * as gcloud from "@google-cloud/firestore";
 
 export class CrowdReportEntity {
   createdAt: Date;
@@ -7,15 +8,16 @@ export class CrowdReportEntity {
   spotId: string;
   duration: string;
   intensity: number;
+  coordinates: gcloud.GeoPoint; // Ajout du champ coordinates
 
-  constructor({createdAt, userId, id, spotId, duration, intensity} : {
+  constructor({ createdAt, userId, id, spotId, duration, intensity, coordinates }: {
           createdAt: Date,
           userId: string,
           spotId: string,
           id: string,
           duration: string,
           intensity: number,
-
+    coordinates: gcloud.GeoPoint // Ajout du champ coordinates
       }) {
     this.createdAt = createdAt;
     this.userId = userId;
@@ -23,8 +25,8 @@ export class CrowdReportEntity {
     this.id = id;
     this.duration = duration;
     this.intensity = intensity;
+    this.coordinates = coordinates; // Initialisation du champ coordinates
   }
-
 
   static fromSnapshot(snapshot: DocumentData): CrowdReportEntity {
     const json = snapshot.data();
@@ -35,7 +37,7 @@ export class CrowdReportEntity {
       spotId: json.spotId,
       duration: json.duration,
       intensity: json.intensity,
-
+      coordinates: new gcloud.GeoPoint(json.coordinates[0], json.coordinates[1]) // Conversion de json en GeoPoint
     });
     return dto;
   }

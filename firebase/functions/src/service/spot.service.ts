@@ -1,4 +1,5 @@
 import {CreateSpotDto} from "../common/dto/create_spot.dto";
+import { ValidateSpotDto } from "../common/dto/validation_spot.dto";
 import {TransactionType} from "../common/entity/transaction.entity";
 import {SpotRepository} from "../repository/spot.repository";
 import {TransactionRepository} from "../repository/transaction.repository";
@@ -76,7 +77,7 @@ export class SpotService {
     });
   }
 
-  static async validate(userId: string, spotId: string) {
+  static async validate(userId: string, spotId: string, dto: ValidateSpotDto) {
     const spot = await SpotRepository.getSpotById(spotId);
     const gems = spot.getGemsNow();
 
@@ -86,6 +87,7 @@ export class SpotService {
       spotId: spotId,
       gems: gems,
       createdAt: new Date(Date.now()),
+      coordinates: dto.coordinates
     });
 
     //  Update the user

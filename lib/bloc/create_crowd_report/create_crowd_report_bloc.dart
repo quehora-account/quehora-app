@@ -22,7 +22,7 @@ class CreateCrowdReportBloc extends Bloc<CreateCrowdReportEvent, CreateCrowdRepo
     try {
       emit(CreateCrowdReportLoading());
       await crowdReportRepository.createCrowdReport(
-          event.spotId, event.intensity, event.duration);
+          event.spotId, event.intensity, event.duration, event.coordinates);
 
       emit(CreateCrowdReportSuccess());
     } catch (exception, stack) {

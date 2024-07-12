@@ -15,6 +15,7 @@ export class CrowdReportService {
       intensity: dto.intensity,
       duration: dto.duration,
       createdAt: new Date(),
+      coordinates: dto.coordinates,
     });
 
     // Get the spot
@@ -26,6 +27,7 @@ export class CrowdReportService {
       duration: dto.duration,
       intensity: dto.intensity,
       userId: userId,
+      coordinates: dto.coordinates,
     });
     await SpotRepository.updateLastCrowdReport(dto.spotId, spot.lastCrowdReport.toJson());
 

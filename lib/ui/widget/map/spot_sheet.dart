@@ -1,15 +1,20 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:hoora/bloc/validate_spot/validate_spot_bloc.dart';
 import 'package:hoora/common/sentences.dart';
 import 'package:hoora/common/decoration.dart';
 import 'package:hoora/model/spot_model.dart';
 import 'package:hoora/ui/page/map/create_crowd_report_page.dart';
-import 'package:hoora/ui/page/spot_page.dart';
 import 'package:hoora/ui/page/map/spot_validation_page.dart';
+import 'package:hoora/ui/page/spot_page.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:slider_button/slider_button.dart';
 
@@ -25,17 +30,43 @@ class SpotSheet extends StatefulWidget {
 class _SpotSheetState extends State<SpotSheet> {
   bool isInCircleRadius = false;
 
+  LatLng? userPosition;
+  StreamSubscription<Position>? positionStream;
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
+
+    userPosition = LatLng(48.6413566, 2.3509184);
+
+    /// Update user position
+    positionStream =
+        Geolocator.getPositionStream().listen((Position? position) {
+      if (position != null && mounted) {
+        setState(() {
+          userPosition = LatLng(position.latitude, position.longitude);
+        });
+      }
+    });
+
     if (widget.userPosition != null) {
       isInCircleRadius = widget.spot.isInCircleRadius(widget.userPosition!);
     }
   }
 
   @override
+  void dispose() {
+    positionStream?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
+    return BlocConsumer<ValidateSpotBloc, ValidateSpotState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
@@ -74,7 +105,7 @@ class _SpotSheetState extends State<SpotSheet> {
                   ),
                 ),
                 const SizedBox(height: kPadding40),
-                buildButtons(),
+                    buildButtons(state),
                 if (!isInCircleRadius)
                   Padding(
                     padding: const EdgeInsets.only(top: kPadding10),
@@ -90,11 +121,12 @@ class _SpotSheetState extends State<SpotSheet> {
             ),
           ),
         ),
-      ],
-    );
+          ]);
+        });
+  
   }
 
-  Widget buildButtons() {
+  Widget buildButtons(ValidateSpotState state) {
     return Column(children: [
       SizedBox(
         height: 50,
@@ -108,7 +140,12 @@ class _SpotSheetState extends State<SpotSheet> {
                   shadowColor: Colors.transparent,
                   backgroundColor: Colors.white,
                 ),
-                onPressed: () async {
+                onPressed: isLoading
+                    ? null
+                    : () async {
+                        setState(() {
+                          isLoading = true;
+                        });
                   await Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -117,17 +154,22 @@ class _SpotSheetState extends State<SpotSheet> {
                       ),
                     ),
                   );
+                        setState(() {
+                          isLoading = false;
+                        });
                 },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Je partage l'affluence",
-                      style: kBoldNunito16,
-                    ),
-                    const SizedBox(width: kPadding10),
-                    SvgPicture.asset("assets/svg/gem.svg"),
-                  ],
+                child: isLoading
+                    ? CircularProgressIndicator()
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "Je partage l'affluence",
+                            style: kBoldNunito16,
+                          ),
+                          const SizedBox(width: kPadding10),
+                          SvgPicture.asset("assets/svg/gem.svg"),
+                        ],
                 ),
               ),
             ),
@@ -166,6 +208,24 @@ class _SpotSheetState extends State<SpotSheet> {
                     vibrationFlag: false,
                     baseColor: Colors.white.withOpacity(0.5),
                     action: () async {
+                      Geolocator.getPositionStream()
+                          .listen((Position? position) {
+                        if (position != null && mounted) {
+                          setState(() {
+                            userPosition =
+                                LatLng(position.latitude, position.longitude);
+                          });
+                        }
+                      });
+                      context.read<ValidateSpotBloc>().add(
+                            ValidateSpot(
+                              spot: widget.spot,
+                              coordinates: [
+                                userPosition!.latitude,
+                                userPosition!.longitude
+                              ],
+                            ),
+                          );
                       await Navigator.push(
                         context,
                         MaterialPageRoute(
