@@ -2,7 +2,7 @@ name: hoora
 description: "A new Flutter project."
 publish_to: 'none'
 
-version: 1.14.4+43
+version: 1.15.0+44
 
 environment:
   sdk: '>=3.3.3 <4.0.0'
