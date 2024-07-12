@@ -44,9 +44,21 @@ class _SpotSheetState extends State<SpotSheet> {
     positionStream =
         Geolocator.getPositionStream().listen((Position? position) {
       if (position != null && mounted) {
-        setState(() {
-          userPosition = LatLng(position.latitude, position.longitude);
-        });
+        final newPosition = LatLng(position.latitude, position.longitude);
+
+        if (userPosition?.latitude.toStringAsFixed(4) !=
+                newPosition.latitude.toStringAsFixed(4) &&
+            userPosition?.longitude.toStringAsFixed(4) !=
+                newPosition.longitude.toStringAsFixed(4)) {
+          setState(() {
+            print(
+                'La géolocalisation a changé.\n- old = ${userPosition?.latitude.toStringAsFixed(4)}, ${userPosition?.longitude.toStringAsFixed(4)}\n- new = ${newPosition.latitude.toStringAsFixed(4)}, ${newPosition.longitude.toStringAsFixed(4)}\n________');
+            userPosition = newPosition;
+          });
+        } else {
+          print(
+              'La géolocalisation est la même.\n- old = ${userPosition?.latitude.toStringAsFixed(4)}, ${userPosition?.longitude.toStringAsFixed(4)}\n- new = ${newPosition.latitude.toStringAsFixed(4)}, ${newPosition.longitude.toStringAsFixed(4)}\n________');
+        }
       }
     });
 
@@ -63,14 +75,13 @@ class _SpotSheetState extends State<SpotSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ValidateSpotBloc, ValidateSpotState>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          return Column(
+    print('======= BUILD ========');
+
+    return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: const EdgeInsets.only(bottom: kPadding5),
+          padding: EdgeInsets.only(bottom: kPadding5),
           child: Text(
             "Affluences signalées il y a moins de deux heures.",
             style: kRegularNunito12.copyWith(
@@ -90,7 +101,8 @@ class _SpotSheetState extends State<SpotSheet> {
             padding: const EdgeInsets.all(kPadding20),
             child: Column(
               children: [
-                if (!widget.spot.isClosedAt(DateTime.now(), onlyHour: false)) buildCircles(),
+                if (!widget.spot.isClosedAt(DateTime.now(), onlyHour: false))
+                  buildCircles(),
                 buildIso(),
                 buildDiscoverButton(),
                 const SizedBox(height: kPadding10),
@@ -105,10 +117,10 @@ class _SpotSheetState extends State<SpotSheet> {
                   ),
                 ),
                 const SizedBox(height: kPadding40),
-                    buildButtons(state),
+                buildButtons(),
                 if (!isInCircleRadius)
                   Padding(
-                    padding: const EdgeInsets.only(top: kPadding10),
+                    padding: EdgeInsets.only(top: kPadding10),
                     child: Text(
                       "Rapprochez vous du site pour pouvoir valider",
                       style: kRegularNunito14.copyWith(
@@ -121,12 +133,11 @@ class _SpotSheetState extends State<SpotSheet> {
             ),
           ),
         ),
-          ]);
-        });
-  
+      ],
+    );    
   }
 
-  Widget buildButtons(ValidateSpotState state) {
+  Widget buildButtons() {
     return Column(children: [
       SizedBox(
         height: 50,
@@ -135,7 +146,6 @@ class _SpotSheetState extends State<SpotSheet> {
             SizedBox(
               height: 50,
               child: ElevatedButton(
-                
                 style: ElevatedButton.styleFrom(
                   shadowColor: Colors.transparent,
                   backgroundColor: Colors.white,
@@ -146,18 +156,18 @@ class _SpotSheetState extends State<SpotSheet> {
                         setState(() {
                           isLoading = true;
                         });
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CreateCrowdReportPage(
-                        spot: widget.spot,
-                      ),
-                    ),
-                  );
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CreateCrowdReportPage(
+                              spot: widget.spot,
+                            ),
+                          ),
+                        );
                         setState(() {
                           isLoading = false;
                         });
-                },
+                      },
                 child: isLoading
                     ? CircularProgressIndicator()
                     : Row(
@@ -170,7 +180,7 @@ class _SpotSheetState extends State<SpotSheet> {
                           const SizedBox(width: kPadding10),
                           SvgPicture.asset("assets/svg/gem.svg"),
                         ],
-                ),
+                      ),
               ),
             ),
             if (!isInCircleRadius || widget.spot.isClosedAt(DateTime.now()))
@@ -208,15 +218,6 @@ class _SpotSheetState extends State<SpotSheet> {
                     vibrationFlag: false,
                     baseColor: Colors.white.withOpacity(0.5),
                     action: () async {
-                      Geolocator.getPositionStream()
-                          .listen((Position? position) {
-                        if (position != null && mounted) {
-                          setState(() {
-                            userPosition =
-                                LatLng(position.latitude, position.longitude);
-                          });
-                        }
-                      });
                       context.read<ValidateSpotBloc>().add(
                             ValidateSpot(
                               spot: widget.spot,
@@ -610,3 +611,10 @@ class _SpotSheetState extends State<SpotSheet> {
     return "heure creuse";
   }
 }
+
+
+
+
+
+
+

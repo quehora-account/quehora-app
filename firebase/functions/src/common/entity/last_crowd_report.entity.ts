@@ -31,7 +31,7 @@ export class LastCrowdReportEntity {
       userId: json.userId,
       duration: json.duration,
       intensity: json.intensity,
-      coordinates: new gcloud.GeoPoint(json.coordinates[0], json.coordinates[1]) // Conversion de json en GeoPoint
+      coordinates: new gcloud.GeoPoint(json.coordinates['_latitude'], json.coordinates['_longitude']) // Conversion de json en GeoPoint
     });
     return entity;
   }
