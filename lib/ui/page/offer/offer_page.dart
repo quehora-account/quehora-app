@@ -186,7 +186,8 @@ class OfferPage extends StatelessWidget {
                               showUnlockPopup(context);
                             }
                           : () {
-                              Alert.showSuccess(context, "Vous n'avez pas assez de .");
+                              Alert.showSuccess(
+                                  context, "Vous n'avez pas assez de Diamz.");
                             },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
