@@ -8,11 +8,14 @@ import 'package:hoora/bloc/validate_spot/validate_spot_bloc.dart';
 import 'package:hoora/common/decoration.dart';
 import 'package:hoora/model/spot_model.dart';
 import 'package:hoora/ui/page/map/create_crowd_report_page.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:lottie/lottie.dart';
 
 class SpotValidationPage extends StatefulWidget {
   final Spot spot;
-  const SpotValidationPage({super.key, required this.spot});
+  final LatLng userPosition;
+  const SpotValidationPage(
+      {super.key, required this.spot, required this.userPosition});
 
   @override
   State<SpotValidationPage> createState() => _SpotValidationPageState();
@@ -162,6 +165,7 @@ class _SpotValidationPageState extends State<SpotValidationPage> {
                               MaterialPageRoute(
                                 builder: (context) => CreateCrowdReportPage(
                                   spot: widget.spot,
+                                  userPosition: widget.userPosition,
                                 ),
                               ),
                             );

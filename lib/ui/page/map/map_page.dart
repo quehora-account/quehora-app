@@ -33,19 +33,30 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
   bool isCategoriesDisplayed = false;
   LatLng? userPosition;
   double zoom = 15;
-  
+  StreamSubscription<Position>? positionStream;
+
   @override
   void initState() {
     super.initState();
 
     context.read<FirstLaunchBloc>().add(RequestGeolocation());
-    
-    /// Update user position
-    Geolocator.getPositionStream().listen((Position? position) {
-      if (position != null) {
-        setState(() {
-          userPosition = LatLng(position.latitude, position.longitude);
-        });
+
+    positionStream =
+        Geolocator.getPositionStream().listen((Position? position) {
+      if (position != null && mounted) {
+        final newPosition = LatLng(position.latitude, position.longitude);
+
+        if (userPosition?.latitude.toStringAsFixed(4) !=
+                newPosition.latitude.toStringAsFixed(4) &&
+            userPosition?.longitude.toStringAsFixed(4) !=
+                newPosition.longitude.toStringAsFixed(4)) {
+          setState(() {
+            // print('La géolocalisation a changé.\n- old = ${userPosition?.latitude.toStringAsFixed(4)}, ${userPosition?.longitude.toStringAsFixed(4)}\n- new = ${newPosition.latitude.toStringAsFixed(4)}, ${newPosition.longitude.toStringAsFixed(4)}\n________');
+            userPosition = newPosition;
+          });
+        } else {
+          // print('La géolocalisation est la même.\n- old = ${userPosition?.latitude.toStringAsFixed(4)}, ${userPosition?.longitude.toStringAsFixed(4)}\n- new = ${newPosition.latitude.toStringAsFixed(4)}, ${newPosition.longitude.toStringAsFixed(4)}\n________');
+        }
       }
     });
 
@@ -54,6 +65,11 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
       DateTime date = DateTime.now();
       context.read<MapBloc>().add(UpdateDate(date: date));
     });
+  }
+  @override
+  void dispose() {
+    positionStream?.cancel();
+    super.dispose();
   }
 
   @override

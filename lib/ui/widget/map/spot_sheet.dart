@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:hoora/bloc/validate_spot/validate_spot_bloc.dart';
 import 'package:hoora/common/sentences.dart';
 import 'package:hoora/common/decoration.dart';
@@ -18,10 +15,11 @@ import 'package:hoora/ui/page/spot_page.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:slider_button/slider_button.dart';
 
+// ignore: must_be_immutable
 class SpotSheet extends StatefulWidget {
   final Spot spot;
-  final LatLng? userPosition;
-  const SpotSheet({super.key, required this.spot, required this.userPosition});
+  LatLng? userPosition;
+  SpotSheet({super.key, required this.spot, this.userPosition});
 
   @override
   State<SpotSheet> createState() => _SpotSheetState();
@@ -29,59 +27,24 @@ class SpotSheet extends StatefulWidget {
 
 class _SpotSheetState extends State<SpotSheet> {
   bool isInCircleRadius = false;
-
-  LatLng? userPosition;
-  StreamSubscription<Position>? positionStream;
   bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-
-    userPosition = LatLng(48.6413566, 2.3509184);
-
-    /// Update user position
-    positionStream =
-        Geolocator.getPositionStream().listen((Position? position) {
-      if (position != null && mounted) {
-        final newPosition = LatLng(position.latitude, position.longitude);
-
-        if (userPosition?.latitude.toStringAsFixed(4) !=
-                newPosition.latitude.toStringAsFixed(4) &&
-            userPosition?.longitude.toStringAsFixed(4) !=
-                newPosition.longitude.toStringAsFixed(4)) {
-          setState(() {
-            print(
-                'La géolocalisation a changé.\n- old = ${userPosition?.latitude.toStringAsFixed(4)}, ${userPosition?.longitude.toStringAsFixed(4)}\n- new = ${newPosition.latitude.toStringAsFixed(4)}, ${newPosition.longitude.toStringAsFixed(4)}\n________');
-            userPosition = newPosition;
-          });
-        } else {
-          print(
-              'La géolocalisation est la même.\n- old = ${userPosition?.latitude.toStringAsFixed(4)}, ${userPosition?.longitude.toStringAsFixed(4)}\n- new = ${newPosition.latitude.toStringAsFixed(4)}, ${newPosition.longitude.toStringAsFixed(4)}\n________');
-        }
-      }
-    });
-
     if (widget.userPosition != null) {
       isInCircleRadius = widget.spot.isInCircleRadius(widget.userPosition!);
     }
   }
 
   @override
-  void dispose() {
-    positionStream?.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    print('======= BUILD ========');
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: EdgeInsets.only(bottom: kPadding5),
+          padding: const EdgeInsets.only(bottom: kPadding5),
           child: Text(
             "Affluences signalées il y a moins de deux heures.",
             style: kRegularNunito12.copyWith(
@@ -120,7 +83,7 @@ class _SpotSheetState extends State<SpotSheet> {
                 buildButtons(),
                 if (!isInCircleRadius)
                   Padding(
-                    padding: EdgeInsets.only(top: kPadding10),
+                    padding: const EdgeInsets.only(top: kPadding10),
                     child: Text(
                       "Rapprochez vous du site pour pouvoir valider",
                       style: kRegularNunito14.copyWith(
@@ -161,6 +124,7 @@ class _SpotSheetState extends State<SpotSheet> {
                           MaterialPageRoute(
                             builder: (context) => CreateCrowdReportPage(
                               spot: widget.spot,
+                              userPosition: widget.userPosition!,
                             ),
                           ),
                         );
@@ -169,7 +133,7 @@ class _SpotSheetState extends State<SpotSheet> {
                         });
                       },
                 child: isLoading
-                    ? CircularProgressIndicator()
+                    ? const CircularProgressIndicator()
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -222,8 +186,8 @@ class _SpotSheetState extends State<SpotSheet> {
                             ValidateSpot(
                               spot: widget.spot,
                               coordinates: [
-                                userPosition!.latitude,
-                                userPosition!.longitude
+                                widget.userPosition!.latitude,
+                                widget.userPosition!.longitude
                               ],
                             ),
                           );
@@ -232,6 +196,7 @@ class _SpotSheetState extends State<SpotSheet> {
                         MaterialPageRoute(
                           builder: (context) => SpotValidationPage(
                             spot: widget.spot,
+                            userPosition: widget.userPosition!,
                           ),
                         ),
                       );

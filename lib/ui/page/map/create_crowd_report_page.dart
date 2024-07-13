@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:hoora/bloc/create_crowd_report/create_crowd_report_bloc.dart';
 import 'package:hoora/bloc/user/user_bloc.dart';
 import 'package:hoora/common/sentences.dart';
@@ -21,7 +18,9 @@ import 'package:lottie/lottie.dart';
 
 class CreateCrowdReportPage extends StatefulWidget {
   final Spot spot;
-  const CreateCrowdReportPage({super.key, required this.spot});
+  final LatLng userPosition;
+  const CreateCrowdReportPage(
+      {super.key, required this.spot, required this.userPosition});
 
   @override
   State<CreateCrowdReportPage> createState() => _CreateCrowdReportPageState();
@@ -31,34 +30,12 @@ class _CreateCrowdReportPageState extends State<CreateCrowdReportPage> {
   int hour = 0;
   int minute = 0;
   int intensity = 1;
-  LatLng? userPosition;
-  StreamSubscription<Position>? positionStream;
 
   @override
   void initState() {
     super.initState();
-
-    userPosition = LatLng(0, 0);
-
-    /// Update user position
-    positionStream =
-        Geolocator.getPositionStream().listen((Position? position) {
-      if (position != null) {
-        if (mounted) {
-          setState(() {
-            userPosition = LatLng(position.latitude, position.longitude);
-          });
-        }
-      }
-    });
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     context.read<CreateCrowdReportBloc>().add(IsAlreadyReported(spotId: widget.spot.id));
-  }
-
-  @override
-  void dispose() {
-    positionStream?.cancel();
-    super.dispose();
   }
 
   @override
@@ -253,8 +230,8 @@ class _CreateCrowdReportPageState extends State<CreateCrowdReportPage> {
                                     spotId: widget.spot.id,
                                     intensity: intensity,
                                       coordinates: [
-                                        userPosition!.latitude,
-                                        userPosition!.longitude
+                                        widget.userPosition.latitude,
+                                        widget.userPosition.longitude
                                       ]
                                   ),
                                 );
