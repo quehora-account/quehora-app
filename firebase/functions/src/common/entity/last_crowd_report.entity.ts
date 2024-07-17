@@ -26,6 +26,14 @@ export class LastCrowdReportEntity {
       return null;
     }
 
+    console.log(json.createdAt.toDate());
+    console.log(json.userId);
+    console.log(json.duration);
+    console.log(json.intensity);
+    console.log(json.coordinates['_latitude']);
+    console.log(json.coordinates['_longitude']);
+    console.log(new gcloud.GeoPoint(json.coordinates['_latitude'], json.coordinates['_longitude']));
+
     const entity = new LastCrowdReportEntity({
       createdAt: json.createdAt.toDate(),
       userId: json.userId,
