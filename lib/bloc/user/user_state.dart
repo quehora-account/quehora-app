@@ -26,7 +26,10 @@ final class InitFailed extends UserState {
 
 final class SetNicknameLoading extends UserState {}
 
-final class SetNicknameSuccess extends UserState {}
+final class SetNicknameSuccess extends UserState {
+  bool hasWatchFirstTimeTutorial = false;
+  SetNicknameSuccess({required this.hasWatchFirstTimeTutorial});
+}
 
 final class NicknameNotAvailable extends UserState {
   final String nickname;

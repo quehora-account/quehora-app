@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hoora/bloc/auth/auth_bloc.dart';
 import 'package:hoora/common/alert.dart';
 import 'package:hoora/common/decoration.dart';
@@ -61,11 +62,7 @@ class _SignInPageState extends State<SignInPage> {
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              icon: const Icon(
-                                CupertinoIcons.arrow_left,
-                                size: 32,
-                                color: kPrimary,
-                              ),
+                              icon: SvgPicture.asset("assets/svg/arrow_left_svg.svg",color: kPrimary,height: 22,width: 22,),
                             ),
                           ),
                           const Text(
@@ -184,12 +181,12 @@ class _SignInPageState extends State<SignInPage> {
                             width: double.infinity,
                             child: ElevatedButton(
                               style: kButtonStyle,
-                              onPressed: state is SignUpWithGoogleLoading
+                              onPressed: state is SignInWithGoogleLoading
                                   ? null
                                   : () {
                                       context.read<AuthBloc>().add(SignInWithGoogle());
                                     },
-                              child: state is SignUpWithGoogleLoading
+                              child: state is SignInWithGoogleLoading
                                   ? const SizedBox(
                                       height: 20,
                                       width: 20,

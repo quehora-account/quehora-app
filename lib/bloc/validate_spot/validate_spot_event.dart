@@ -2,6 +2,8 @@ part of 'validate_spot_bloc.dart';
 
 sealed class ValidateSpotEvent {}
 
+
+
 final class ValidateSpot extends ValidateSpotEvent {
   final Spot spot;
   final List coordinates;
@@ -10,4 +12,7 @@ final class ValidateSpot extends ValidateSpotEvent {
     required this.spot,
     required this.coordinates,
   });
+}
+final class ValidateSpotLoadingEvent extends ValidateSpotEvent {
+
 }

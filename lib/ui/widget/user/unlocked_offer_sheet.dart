@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hoora/bloc/user/user_bloc.dart';
 import 'package:hoora/common/decoration.dart';
 import 'package:hoora/model/offer_model.dart';
@@ -161,10 +161,7 @@ class UnlockedOfferSheet extends StatelessWidget {
                                                 color: kPrimary,
                                                 borderRadius: BorderRadius.circular(100),
                                               ),
-                                              child: const Icon(
-                                                CupertinoIcons.arrow_right,
-                                                color: Colors.white,
-                                              ),
+                                              child:  RotatedBox(quarterTurns:2,child: SvgPicture.asset("assets/svg/arrow_left_svg.svg",color: kPrimary,height: 22,width: 22,)),
                                             ),
                                           ),
                                         );

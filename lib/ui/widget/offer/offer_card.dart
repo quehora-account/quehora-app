@@ -11,7 +11,8 @@ import 'package:hoora/model/level_model.dart';
 
 class OfferCard extends StatelessWidget {
   final Offer offer;
-  const OfferCard({super.key, required this.offer});
+  bool isFromSpotPage = false;
+  OfferCard({super.key, required this.offer,this.isFromSpotPage = false});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,7 @@ class OfferCard extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => OfferPage(offer: offer),
+                  builder: (context) => OfferPage(offer: offer,isFromSpotPage: isFromSpotPage,),
                 ),
               );
             }
@@ -74,7 +75,7 @@ class OfferCard extends StatelessWidget {
                         SizedBox(
                           height: 40,
                           width: 40,
-                          child: getCompanyImage(),
+                          child: offer.company !=null ? getCompanyImage():Container(),
                         ),
                         const SizedBox(width: kPadding10),
                         SizedBox(
@@ -85,7 +86,7 @@ class OfferCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                offer.company!.name,
+                                offer.company!=null ?offer.company!.name:"",
                                 style: kBoldARPDisplay14,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,

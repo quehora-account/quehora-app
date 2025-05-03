@@ -13,7 +13,9 @@ export class SpotRepository {
   static async updateLastCrowdReport(documentId: string, lastCrowdReport: any): Promise<void> {
     await admin.firestore().collection("spot").doc(documentId).update({lastCrowdReport: lastCrowdReport});
   }
-
+  static async updateAllCrowdReport(documentId: string, allCrowdReports: any): Promise<void> {
+    await admin.firestore().collection("spot").doc(documentId).update({"allCrowdReports": allCrowdReports});
+  }
   static async setTrafficPoints(documentId: string, trafficPoints: object[]): Promise<void> {
     await admin.firestore().collection("spot").doc(documentId).update({"trafficPoints": trafficPoints});
   }

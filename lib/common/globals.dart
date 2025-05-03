@@ -1,7 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+
+import '../ui/page/explore/explore_page.dart';
 
 class AppConstants {
   static const String kSSKeyFirstLaunch = "FIRST_LAUNCH";
+  static const String superTypeListSharedKey = "superTypeListPath";
+  static final GlobalKey<ExplorePageState> explorePageKey = GlobalKey<ExplorePageState>();
 
   static Future<String> getMapBoxUrl() async {
     var mapId = await FirebaseFirestore.instance

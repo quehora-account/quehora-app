@@ -57,7 +57,7 @@ class _DurationButtonState extends State<DurationButton> {
             ),
             child: const Text(
               "-",
-              style: kRegularNunito32,
+              style: kBoldNunito32,
             ),
           ),
         ),
@@ -85,7 +85,7 @@ class _DurationButtonState extends State<DurationButton> {
           width: 50,
           child: ElevatedButton(
             onPressed: () {
-              if (hour == 10) {
+              if (hour == 3) {
                 return;
               }
 
@@ -107,7 +107,7 @@ class _DurationButtonState extends State<DurationButton> {
             ),
             child: const Text(
               "+",
-              style: kRegularNunito32,
+              style: kBoldNunito32,
             ),
           ),
         ),

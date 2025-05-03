@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hoora/common/decoration.dart';
@@ -22,11 +21,7 @@ class FeedbackPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  icon: const Icon(
-                    CupertinoIcons.arrow_left,
-                    size: 32,
-                    color: kPrimary,
-                  ),
+                    icon:  SvgPicture.asset("assets/svg/arrow_left_svg.svg",color: kPrimary,height: 22,width: 22,),
                 ),
               ),
               const Center(

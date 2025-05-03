@@ -42,10 +42,11 @@ class TrafficPointExplanationPage extends StatelessWidget {
                 ),
                 buildSection(
                   "1. Sélection du moment et du lieu de votre visite",
-                  "En choisissant de visiter pendant les heures creuses, que le lieu soit très fréquenté ou non, vous gagnez des Diamz. Les heures creuses sont des moments moins affluents, permettant une expérience de visite plus agréable.",
+                  "En choisissant de visiter pendant les heures creuses, vous gagnez des Diamz. Ces moments de faible affluence permettent une visite plus sereine et agréable, loin des foules."
                 ),
                 buildSection("2. Attribution des Diamz en fonction de l'impact",
-                    "Les Diamz sont attribués en fonction de votre contribution à la réduction du nombre de visiteurs. Pour cela, nous comparons le nombre de visiteurs attendus lors de votre visite à la moyenne hebdomadaire. Vous gagnez des Diamz uniquement si l'affluence prévue pour votre visite est inférieure à cette moyenne hebdomadaire. En revanche, si l'affluence est égale ou supérieure à la moyenne, aucun Diamz n'est attribué, car la visite ne contribue pas à alléger la fréquentation du site.\n\nQuehora utilise des données prévisionnelles d'affluence heure par heure à partir de sources fiables pour chaque site touristique.\n\n\nLes créneaux de visite en dessous de la moyenne d'affluence sont récompensés, plus le créneau est en dessous de cette moyenne, plus le nombre de Diamz accordés est élevé pour encourager les visites durant les périodes de moindre affluences."),
+                  "Les Diamz sont attribués selon votre impact sur la réduction de la fréquentation. Pour cela, nous comparons le nombre de visiteurs attendus lors de votre visite à la moyenne hebdomadaire. Plus l'affluence prévue pour votre créneau est inférieure à cette moyenne, plus vous gagnez de Diamz. Autrement dit, moins il y a de monde, plus vous accumulez de Diamz.\n\nQuehora utilise des données prévisionnelles d'affluence heure par heure provenant de sources fiables pour chaque site touristique, garantissant un calcul précis et pertinent."
+                ),
 
                 const SizedBox(height: kPadding40),
                 Center(
@@ -56,13 +57,15 @@ class TrafficPointExplanationPage extends StatelessWidget {
                 ),
 
                 buildSection("3. Exemple concret",
-                    "Modifier votre visite au musée du Louvre du samedi après-midi au lundi matin réduit significativement l'affluence du week-end. Cette action, en allégeant les pics de fréquentation, vous permet d'obtenir davantage de Diamz."),
+                    "En décalant votre visite du musée du Louvre du samedi après-midi au lundi matin, vous contribuez à réduire l'affluence du week-end. Cette démarche vous permet d'alléger les pics de fréquentation et, en retour, d’obtenir davantage de Diamz."),
 
                 buildSection("4. Importance de votre choix",
-                    "Choisir des heures creuses pour vos visites améliore non seulement votre expérience mais joue également un rôle crucial dans la préservation des sites. Cette démarche réduit l'usure des lieux et diminue le besoin de travaux de restauration onéreux, ce qui allège à la fois les coûts et l'impact environnemental. Ainsi, vous participez à un tourisme plus responsable, garantissant la conservation des sites pour l'avenir."),
+                  "Opter pour les heures creuses ne profite pas seulement à votre expérience ; cela aide aussi à préserver les sites touristiques. En diminuant l’usure des lieux et le besoin de restaurations coûteuses, votre visite contribue à un tourisme plus durable, garantissant la préservation des sites pour les générations futures."
+                ),
 
                 buildSection("5. Utilisation de vos Diamz",
-                    "Les Diamz que vous gagnez peuvent être échangés contre des avantages auprès de nos partenaires, tels que des réductions ou des accès exclusifs, enrichissant encore plus votre expérience touristique."),
+                  "Les Diamz que vous cumulez peuvent être échangés contre des avantages exclusifs auprès de nos partenaires, tels que des réductions ou des accès privilégiés, rendant ainsi votre expérience touristique encore plus enrichissante."
+                ),
 
                 const SizedBox(height: kPadding20),
               ],

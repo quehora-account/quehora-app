@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hoora/common/decoration.dart';
 import 'package:lottie/lottie.dart';
 
@@ -51,11 +51,7 @@ class WelcomePage extends StatelessWidget {
                       onPressed: () {
                         Navigator.pushNamed(context, "/first_launch/request_geolocation");
                       },
-                      icon: const Icon(
-                        CupertinoIcons.arrow_right,
-                        size: 32,
-                        color: kPrimary,
-                      ),
+                      icon: RotatedBox(quarterTurns:2,child: SvgPicture.asset("assets/svg/arrow_left_svg.svg",color: kPrimary,height: 22,width: 22,)),
                     ),
                   )
                 ],

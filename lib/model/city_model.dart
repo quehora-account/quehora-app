@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:latlong2/latlong.dart';
 
 class City {
@@ -52,9 +51,6 @@ class City {
     return coordinates.longitude;
   }
 
-  Position getPosition() {
-    return Position(coordinates.longitude, coordinates.latitude);
-  }
 
   LatLng getLatLng() {
     return LatLng(coordinates.latitude, coordinates.longitude);

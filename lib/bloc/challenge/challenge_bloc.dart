@@ -58,9 +58,9 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       });
 
       emit(InitSuccess());
-    } catch (exception, stack) {
+    } catch (exception) {
       /// Report crash to Crashlytics
-      crashRepository.report(exception, stack);
+      //crashRepository.report(exception, stack);
 
       /// Format exception to be displayed.
       AlertException alertException = AlertException.fromException(exception);
@@ -90,9 +90,9 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
         unlockedChallenge: event.challenge.unlockedChallenge!,
         gem: event.challenge.unlockedChallenge!.gem,
       ));
-    } catch (exception, stack) {
+    } catch (exception) {
       /// Report crash to Crashlytics
-      crashRepository.report(exception, stack);
+      ////crashRepository.report(exception, stack);
 
       /// Format exception to be displayed.
       AlertException alertException = AlertException.fromException(exception);

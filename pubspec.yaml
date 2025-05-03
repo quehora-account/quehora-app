@@ -2,7 +2,7 @@ name: hoora
 description: "A new Flutter project."
 publish_to: 'none'
 
-version: 1.15.4+48
+version: 1.16.0+51
 
 environment:
   sdk: '>=3.3.3 <4.0.0'
@@ -10,34 +10,36 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  mapbox_maps_flutter: ^1.1.0
+  #mapbox_maps_flutter: ^2.5.1
   cupertino_icons: ^1.0.6
   lottie: ^3.1.0
   shared_preferences: ^2.2.3
-  firebase_core: ^2.27.2
-  firebase_auth: ^4.17.8
-  cloud_firestore: ^4.15.8
+  sliding_up_panel: ^2.0.0+1
   flutter_bloc: ^8.1.5
-  geolocator: ^11.0.0
+  geolocator: ^13.0.2
   url_launcher: ^6.2.5
   google_sign_in: ^6.2.1
   sign_in_with_apple: ^6.0.0
   flutter_svg: ^2.0.10+1
   flutter_native_splash: ^2.4.0
-  firebase_crashlytics: ^3.5.0
-  firebase_analytics: ^10.10.0
-  firebase_storage: ^11.7.1
-  cloud_functions: ^4.7.3
+  firebase_crashlytics: ^4.2.0
+  firebase_analytics: ^11.3.6
+  firebase_core: ^3.8.1
+  firebase_storage: ^12.3.7
+  firebase_auth: ^5.3.4
+  cloud_functions: ^5.2.0
+  cloud_firestore: ^5.5.1
   cached_network_image: ^3.3.1
   intl: ^0.19.0
   flutter_map: ^6.1.0
   latlong2: ^0.9.1
+  #firebase_app_check: ^0.3.2+3
   slider_button: ^2.1.0
   http: ^1.2.1
   google_fonts: ^6.2.1
   app_settings: ^5.1.1
+  #firebase_app_check: ^0.3.1+7
 
-    
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -80,9 +82,22 @@ flutter:
 
 flutter_native_splash:
   ios: false
+  ios_content_mode: scaleAspectFit
   android: true
-  color: "#0E1626"
-  image: "assets/images/android_splash.png"
+  web : false
+  color: "#153330"
+  image: "assets/images/android_splash3.png"
   android_12:
-    color: "#0E1626"
-    image: "assets/images/android_splash.png"
+    color: "#153330"
+    image: "assets/images/android_splash3.png"
+
+#run this after changing the splash screen
+#flutter pub run flutter_native_splash:create
+
+flutter_icons:
+  android: true
+  ios: false
+  flavor:
+    production:
+      image_path: "assets/launcher_icon/foreground_production.png"
+      adaptive_icon_background: "assets/launcher_icon/background_production.png"

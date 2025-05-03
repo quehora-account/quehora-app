@@ -30,6 +30,38 @@
           }
         },
         {
+          "client_id": "1041066486499-al4oe17oufar1cbcofhic4gvbi0187ei.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.hoora",
+            "certificate_hash": "4d22ce8a4f01aa2b39eb4b8faf19c28981d87fab"
+          }
+        },
+        {
+          "client_id": "1041066486499-cdaacncvq05plg0m3kpsritqed1rribg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.hoora",
+            "certificate_hash": "131a9e553a8d2c24904a7cb55737a32f15961aa7"
+          }
+        },
+        {
+          "client_id": "1041066486499-gsuojldap5n3qoe83kqqbfctbib10sfb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.hoora",
+            "certificate_hash": "bf6d6c4c53a5931913646fced1e3f5d28e6915ea"
+          }
+        },
+        {
+          "client_id": "1041066486499-vjrcjaq2lhun67vg9jaldiu9vlv9kp10.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.hoora",
+            "certificate_hash": "34a355b8a13f861ac074fdfcd0150ba0f0cb02b3"
+          }
+        },
+        {
           "client_id": "1041066486499-bq67mqkt06gcirqmobt5d53knfkrq0uj.apps.googleusercontent.com",
           "client_type": 3
         }

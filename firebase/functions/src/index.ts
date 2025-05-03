@@ -42,8 +42,8 @@ admin.initializeApp();
 export const onUserCreated = v1.auth.user().onCreate(async (user) => {
   await admin.firestore().collection("user").add({
     userId: user.uid,
-    gem: 15,
-    experience: 15,
+    gem: 100,
+    experience: 100,
     firstname: "",
     lastname: "",
     nickname: "",
@@ -62,7 +62,7 @@ export const onUserCreated = v1.auth.user().onCreate(async (user) => {
   // Create transaction
   await TransactionRepository.create({
     "type": TransactionType.launch_gift,
-    "gem": 15,
+    "gem": 100,
     "userId": user.uid,
     "name": "Récompense de bienvenue",
     "createdAt": new Date(),
@@ -90,35 +90,35 @@ export const onSpotCreated = v2.firestore.onDocumentCreated("spot/{docId}", asyn
 * Update traffic points when spot is updated if popularTimes or density have changed
 */
 
-function areArraysEqual(arr1: any[], arr2: any[]): boolean {
-  if (arr1.length !== arr2.length) {
-    return false;
-  }
-  for (let i = 0; i < arr1.length; i++) {
-    if (typeof arr1[i] === "object" && typeof arr2[i] === "object") {
-      if (!areObjectsEqual(arr1[i], arr2[i])) {
-        return false;
-      }
-    } else if (arr1[i] !== arr2[i]) {
-      return false;
-    }
-  }
-  return true;
-}
+// function areArraysEqual(arr1: any[], arr2: any[]): boolean {
+//   if (arr1.length !== arr2.length) {
+//     return false;
+//   }
+//   for (let i = 0; i < arr1.length; i++) {
+//     if (typeof arr1[i] === "object" && typeof arr2[i] === "object") {
+//       if (!areObjectsEqual(arr1[i], arr2[i])) {
+//         return false;
+//       }
+//     } else if (arr1[i] !== arr2[i]) {
+//       return false;
+//     }
+//   }
+//   return true;
+// }
 
-function areObjectsEqual(obj1: Record<string, any>, obj2: Record<string, any>): boolean {
-  const keys1 = Object.keys(obj1);
-  const keys2 = Object.keys(obj2);
-  if (keys1.length !== keys2.length) {
-    return false;
-  }
-  for (const key of keys1) {
-    if (obj1[key] !== obj2[key]) {
-      return false;
-    }
-  }
-  return true;
-}
+// function areObjectsEqual(obj1: Record<string, any>, obj2: Record<string, any>): boolean {
+//   const keys1 = Object.keys(obj1);
+//   const keys2 = Object.keys(obj2);
+//   if (keys1.length !== keys2.length) {
+//     return false;
+//   }
+//   for (const key of keys1) {
+//     if (obj1[key] !== obj2[key]) {
+//       return false;
+//     }
+//   }
+//   return true;
+// }
 
 export const onSpotUpdated = v2.firestore.onDocumentUpdated("spot/{docId}", async (event) => {
   try {
@@ -129,15 +129,13 @@ export const onSpotUpdated = v2.firestore.onDocumentUpdated("spot/{docId}", asyn
 
     v2.logger.info("oldPopularTimes: ", oldPopularTimes, ", newPopularTimes: ", newPopularTimes, ", oldDensity: ", oldDensity, ", newDensity: ", newDensity);
 
-    const popularTimesChanged = !areArraysEqual(oldPopularTimes, newPopularTimes);
-    const densityChanged = !areArraysEqual(oldDensity, newDensity);
+    // const popularTimesChanged = !areArraysEqual(oldPopularTimes, newPopularTimes);
+    // const densityChanged = !areArraysEqual(oldDensity, newDensity);
 
-    if (popularTimesChanged || densityChanged) {
-      const popularTimes = newPopularTimes;
+    const popularTimes = newPopularTimes;
       const density = newDensity[new Date().getMonth()];
       const trafficPoints = SpotService.generateTrafficPoints(popularTimes, density);
       await SpotRepository.setTrafficPoints(event.data!.after.id, trafficPoints);
-    }
   } catch (e) {
     console.error(e);
   }

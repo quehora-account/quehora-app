@@ -42,11 +42,7 @@ class _LevelPageState extends State<LevelPage> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  icon: const Icon(
-                    CupertinoIcons.arrow_left,
-                    size: 32,
-                    color: kPrimary,
-                  ),
+                  icon:  SvgPicture.asset("assets/svg/arrow_left_svg.svg",color: kPrimary,height: 22,width: 22,),
                 ),
               ),
               const Text(

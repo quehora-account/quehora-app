@@ -14,11 +14,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "272282529253-d0mt82p111b3vpet6flbvr8upa913un4.apps.googleusercontent.com",
+          "client_id": "272282529253-98jhjqieg83gqhmvi1jmb644pvc701e1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "app.hoora.staging",
-            "certificate_hash": "84cbbde1f3d4ac95fc6ffd6e377649844c513db0"
+            "certificate_hash": "131a9e553a8d2c24904a7cb55737a32f15961aa7"
+          }
+        },
+        {
+          "client_id": "272282529253-a8o644l7todq71r3qonjab1j8p9nd3af.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.hoora.staging",
+            "certificate_hash": "bf6d6c4c53a5931913646fced1e3f5d28e6915ea"
           }
         },
         {

@@ -26,15 +26,16 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file('key.properties')
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-}
+//def keystoreProperties = new Properties()
+//def keystorePropertiesFile = rootProject.file('key.properties')
+//if (keystorePropertiesFile.exists()) {
+//    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+//}
 
 android {
+    compileSdkVersion 34
     namespace "app.hoora"
-    compileSdk flutter.compileSdkVersion
+//    compileSdk flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -48,18 +49,21 @@ android {
 
     defaultConfig {
         applicationId "app.hoora"
-        minSdkVersion 28
+        minSdkVersion 23
+        ndkVersion = "27.0.12077973"
+
         targetSdkVersion flutter.targetSdkVersion
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        versionCode 51
+        versionName "1.16.0"
+        multiDexEnabled true
     }
 
     signingConfigs {
         release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
+            keyAlias "upload"
+            keyPassword "Dhoora=app4"
+            storeFile file("keystore1.jks")
+            storePassword "Dhoora=app4"
         }
     }
     buildTypes {
@@ -67,6 +71,7 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
     flavorDimensions "app"
 
     productFlavors {

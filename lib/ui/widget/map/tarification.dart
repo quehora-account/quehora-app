@@ -14,7 +14,7 @@ class Tarification extends StatelessWidget {
     return SizedBox(
         width: 100,
         child: Column(children: [
-      SvgPicture.asset(svgPath),
+      SvgPicture.asset(svgPath,color: kBlackGreen,),
       const SizedBox(height: kPadding5),
       Text(data.price, style: kBoldNunito12),
           Text(data.condition,

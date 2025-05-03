@@ -5,7 +5,9 @@ import 'package:hoora/bloc/user/user_bloc.dart';
 import 'package:hoora/common/alert.dart';
 import 'package:hoora/common/decoration.dart';
 import 'package:hoora/common/validator.dart';
+import 'package:hoora/ui/page/first_launch/explanation_page.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NicknamePage extends StatefulWidget {
   const NicknamePage({super.key});
@@ -31,7 +33,16 @@ class _NicknamePageState extends State<NicknamePage> {
         }
 
         if (state is SetNicknameSuccess) {
-          Navigator.pushReplacementNamed(context, "/home");
+          if(state.hasWatchFirstTimeTutorial){
+            Navigator.pushReplacementNamed(context, "/home");
+          }else{
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ExplanationPage(goHome: true,),
+              ),
+            );
+          }
         }
       },
       builder: (context, state) {
@@ -87,18 +98,11 @@ class _NicknamePageState extends State<NicknamePage> {
                       const Spacer(
                         flex: 2,
                       ),
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Pseudo",
-                          style: kRegularNunito14,
-                        ),
-                      ),
                       const SizedBox(height: kPadding5),
                       TextFormField(
-                        maxLength: 10,
+                        maxLength: 12,
                         style: kRegularNunito18,
-                        decoration: kTextFieldStyle.copyWith(hintText: ""),
+                        decoration: kTextFieldStyle.copyWith(hintText: "Pseudo"),
                         controller: nicknameController,
                         validator: Validator.nicknameHasGoodFormat,
                       ),

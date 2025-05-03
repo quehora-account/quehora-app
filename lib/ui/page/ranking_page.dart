@@ -27,98 +27,100 @@ class _RankingPageState extends State<RankingPage> with AutomaticKeepAliveClient
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocConsumer<RankingBloc, RankingState>(
-      listener: (context, state) {
-        if (state is InitFailed) {
-          Alert.showError(context, state.exception.message);
-        }
-      },
-      builder: (context, state) {
-        if (state is InitLoading || state is InitFailed) {
-          return const Center(child: CircularProgressIndicator(color: kPrimary));
-        }
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: BlocConsumer<RankingBloc, RankingState>(
+        listener: (context, state) {
+          if (state is InitFailed) {
+            Alert.showError(context, state.exception.message);
+          }
+        },
+        builder: (context, state) {
+          if (state is InitLoading || state is InitFailed) {
+            return const Center(child: CircularProgressIndicator(color: kPrimary));
+          }
 
-        return Column(
-          children: [
-            SizedBox(height: MediaQuery.of(context).padding.top),
-            const Padding(
-              padding: EdgeInsets.only(top: kPadding20, right: kPadding20),
-              child: Align(alignment: Alignment.topRight, child: GemButton()),
-            ),
-            const SizedBox(height: kPadding20),
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.only(left: kPadding20),
-                child: Text(
-                  "Montez dans le\nclassement & gagnez\ndes récompenses !",
-                  style: kBoldARPDisplay18,
-                  textAlign: TextAlign.left,
+          return Column(
+            children: [
+              SizedBox(height: MediaQuery.of(context).padding.top),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(kPadding20,kPadding20,kPadding20,kPadding40),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Flexible(
+                      child: Text(
+                        "Montez dans le  classement &\ngagnez des Diamz !",
+                        style: kBoldARPDisplay18,
+                      ),
+                    ),
+                    GemButton(isLight: true,bigGem: true,),
+                  ],
                 ),
               ),
-            ),
-            const SizedBox(height: kPadding40),
-            Padding(
-              padding: const EdgeInsets.only(left: kPadding20),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SvgPicture.asset("assets/svg/ranking_rugby.svg"),
-                  const SizedBox(width: kPadding10),
-                  const Text("Classement", style: kRBoldNunito18),
-                ],
-              ),
-            ),
-            const SizedBox(height: kPadding5),
-            const Padding(
-              padding: EdgeInsets.only(left: kPadding20),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Vos diamz cumulés depuis le début",
-                  style: kRegularNunito12,
+              Padding(
+                padding: const EdgeInsets.only(left: 25),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset("assets/svg/ranking_rugby.svg"),
+                    const SizedBox(width: kPadding10),
+                    const Text("Classement", style: kRBoldNunito18),
+                  ],
                 ),
               ),
-            ),
-            const SizedBox(height: kPadding10),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: kPadding20),
-                child: ListView.builder(
-                    itemCount: rankingBloc.users.length,
-                    padding: EdgeInsets.zero,
-                    itemBuilder: (context, index) {
-                      User user = rankingBloc.users[index];
-                      EdgeInsetsGeometry padding = const EdgeInsets.only(bottom: 10);
-
-                      if (index == 0) {
-                        padding = const EdgeInsets.only(top: 10, bottom: 10);
-                      }
-
-                      if (index == rankingBloc.users.length - 1 && rankingBloc.users.length > 1) {
-                        padding = const EdgeInsets.only(bottom: 20);
-                      }
-
-                      return Padding(
-                        padding: padding,
-                        child: RankedCard(
-                          user: user,
-                          position: index + 1,
-                        ),
-                      );
-                    }),
+              const SizedBox(height: kPadding5),
+              const Padding(
+                padding: EdgeInsets.only(left: 25),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Vos diamz cumulés depuis le début",
+                    style: kBalooPaaji12,
+                  ),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(kPadding20),
-              child: RankedCard(
-                user: rankingBloc.user,
-                position: rankingBloc.userPosition + 1,
+              const SizedBox(height: kPadding10),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: kPadding20),
+                  child: ListView.builder(
+                      itemCount: rankingBloc.users.length,
+                      padding: EdgeInsets.zero,
+                      itemBuilder: (context, index) {
+                        User user = rankingBloc.users[index];
+                        EdgeInsetsGeometry padding = const EdgeInsets.only(bottom: 10);
+
+                        if (index == 0) {
+                          padding = const EdgeInsets.only(top: 10, bottom: 10);
+                        }
+
+                        if (index == rankingBloc.users.length - 1 && rankingBloc.users.length > 1) {
+                          padding = const EdgeInsets.only(bottom: 20);
+                        }
+
+                        return Padding(
+                          padding: padding,
+                          child: RankedCard(
+                            user: user,
+                            position: index + 1,
+                          ),
+                        );
+                      }),
+                ),
               ),
-            )
-          ],
-        );
-      },
+              Padding(
+                padding: const EdgeInsets.all(kPadding20),
+                child: RankedCard(
+                  user: rankingBloc.user,
+                  position: rankingBloc.userPosition + 1,
+                ),
+              )
+            ],
+          );
+        },
+      ),
     );
   }
 

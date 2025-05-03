@@ -4,15 +4,17 @@ class Playlist {
   final String id;
   final String name;
   final String imagePath;
+  final String imageGreen;
   final int priority;
 
-  Playlist({required this.id, required this.name, required this.imagePath, required this.priority});
+  Playlist({required this.id, required this.name, required this.imagePath, required this.imageGreen, required this.priority});
 
   factory Playlist.fromSnapshot(QueryDocumentSnapshot doc) {
     return Playlist(
       id: doc.id,
       name: doc['name'],
       imagePath: doc['imagePath'],
+      imageGreen: doc['imageGreen'],
       priority: doc['priority'],
     );
   }
@@ -30,6 +32,7 @@ class Playlist {
       id: json["id"],
       name: json['name'],
       imagePath: json['imagePath'],
+      imageGreen: json["imageGreen"],
       priority: json['priority'],
     );
   }

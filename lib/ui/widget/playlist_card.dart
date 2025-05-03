@@ -12,22 +12,15 @@ class PlaylistCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 51,
-      width: 51,
-      decoration: BoxDecoration(
-        color: selectedPlaylist != null && playlist.id == selectedPlaylist!.id ? kSecondary : kUnselected,
-        border: Border.all(color: Colors.white, width: 2),
-        borderRadius: BorderRadius.circular(kPadding10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            spreadRadius: 0,
-            blurRadius: 3,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
+    String path = "";
+    if(selectedPlaylist != null && playlist.id == selectedPlaylist!.id){
+      path = "playlist/${playlist.imagePath}";
+    }else{
+      path = "playlist/${playlist.imageGreen}";
+    }
+    return SizedBox(
+      height: 40,
+      width: 45,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -35,35 +28,32 @@ class PlaylistCard extends StatelessWidget {
           onTap: () {
             onTap(playlist);
           },
-          child: Padding(
-            padding: const EdgeInsets.all(kPadding5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                FutureBuilder<String>(
-                    future: FirebaseStorage.instance.ref().child("playlist/${playlist.imagePath}").getDownloadURL(),
-                    builder: (_, snapshot) {
-                      if (snapshot.hasData) {
-                        return Expanded(
-                          child: CachedNetworkImage(
-                            fit: BoxFit.fitHeight,
-                            imageUrl: snapshot.data!,
-                            placeholder: (context, url) => Container(),
-                            errorWidget: (context, url, error) => Container(),
-                          ),
-                        );
-                      }
-                      return const Spacer();
-                    }),
-                const SizedBox(height: 2.5),
-                Text(
-                  playlist.name,
-                  style: kRegularNunito10,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              FutureBuilder<String>(
+                  future: FirebaseStorage.instance.ref().child(path).getDownloadURL(),
+                  builder: (_, snapshot) {
+                    if (snapshot.hasData) {
+                      return Expanded(
+                        child: CachedNetworkImage(
+                          fit: BoxFit.fitHeight,
+                          imageUrl: snapshot.data!,
+                          placeholder: (context, url) => Container(),
+                          errorWidget: (context, url, error) => Container(),
+                        ),
+                      );
+                    }
+                    return const Spacer();
+                  }),
+              const SizedBox(height: 2.5),
+              Text(
+                playlist.name,
+                style: kRegularNunito10.copyWith(fontWeight: FontWeight.w700),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
         ),
       ),

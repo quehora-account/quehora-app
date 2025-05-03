@@ -4,10 +4,23 @@ import 'package:hoora/model/unlocked_offer_model.dart';
 
 // ignore: constant_identifier_names
 enum CodeType { reference, single_use }
+class OfferLocation {
+  final String cityId;
+  final GeoPoint point;
 
+  OfferLocation({
+  required this.cityId,
+  required this.point,});
+
+  factory OfferLocation.fromJson(Map<String, dynamic> json) {
+    return OfferLocation(
+      cityId: json['cityId'],
+      point: json['point'],
+    );
+  }
+}
 class Offer {
   final String id;
-  final String cityId;
   final String companyId;
   final String imagePath;
   final List<String> codes;
@@ -22,13 +35,12 @@ class Offer {
   final int priority;
   final String title;
   Company? company;
-
+  final List<OfferLocation> locations;
   /// For display
   UnlockedOffer? unlockedOffer;
 
   Offer({
     required this.id,
-    required this.cityId,
     required this.companyId,
     required this.imagePath,
     required this.codes,
@@ -42,12 +54,12 @@ class Offer {
     required this.price,
     required this.priority,
     required this.title,
+    required this.locations,
   });
 
   factory Offer.fromSnapshot(QueryDocumentSnapshot doc) {
     return Offer(
       id: doc.id,
-      cityId: doc["cityId"],
       companyId: doc["companyId"],
       imagePath: doc["imagePath"],
       codes: List<String>.from(doc["codes"]),
@@ -61,6 +73,10 @@ class Offer {
       price: doc["price"],
       priority: doc["priority"],
       title: doc["title"],
+      locations: doc.data().toString().contains('locations') ? List<OfferLocation>.from(doc["locations"].map((j) {
+        OfferLocation to = OfferLocation.fromJson(j);
+        return to;
+      })) : [],
     );
   }
 

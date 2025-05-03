@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hoora/model/city_model.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 
 class Region {
   final String id;
@@ -42,13 +41,13 @@ class Region {
     return list;
   }
 
-  static String getRegionNameFromId(String id) {
+  static String getRegionNameFromId(String name ,String id) {
     for (Region region in Region.allRegions) {
       if (region.id == id) {
         return region.name;
       }
     }
-    throw Exception("city not found");
+    throw Exception("city not found$id"+"name:"+name);
   }
 
   static String getCityNameFromId(String regionId, String cityId) {
@@ -62,7 +61,7 @@ class Region {
       }
     }
 
-    throw Exception("city not found");
+    return cityId;
   }
 
   double getLatitude() {
@@ -73,9 +72,6 @@ class Region {
     return coordinates.longitude;
   }
 
-  Position getPosition() {
-    return Position(coordinates.longitude, coordinates.latitude);
-  }
 
   LatLng getLatLng() {
     return LatLng(coordinates.latitude, coordinates.longitude);

@@ -21,13 +21,17 @@ class CreateCrowdReportBloc extends Bloc<CreateCrowdReportEvent, CreateCrowdRepo
   void createCrowdReport(CreateCrowdReport event, Emitter<CreateCrowdReportState> emit) async {
     try {
       emit(CreateCrowdReportLoading());
-      await crowdReportRepository.createCrowdReport(
+      var res = await crowdReportRepository.createCrowdReport(
           event.spotId, event.intensity, event.duration, event.coordinates);
 
-      emit(CreateCrowdReportSuccess());
+      if(res){
+        emit(CreateCrowdReportSuccess());
+      }else{
+        emit(CreateCrowdReportFailed(exception: AlertException(message: "Error creating crowd report.")));
+      }
     } catch (exception, stack) {
       /// Report crash to Crashlytics
-      crashRepository.report(exception, stack);
+      //crashRepository.report(exception, stack);+
 
       /// Format exception to be displayed.
       AlertException alertException = AlertException.fromException(exception);
@@ -46,9 +50,9 @@ class CreateCrowdReportBloc extends Bloc<CreateCrowdReportEvent, CreateCrowdRepo
         return;
       }
       emit(ReportNotAlreadyCreated());
-    } catch (exception, stack) {
+    } catch (exception) {
       /// Report crash to Crashlytics
-      crashRepository.report(exception, stack);
+      ////crashRepository.report(exception, stack);
 
       /// Format exception to be displayed.
       AlertException alertException = AlertException.fromException(exception);

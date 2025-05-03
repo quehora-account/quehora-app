@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hoora/bloc/first_launch/first_launch_bloc.dart';
 import 'package:hoora/common/decoration.dart';
 import 'package:hoora/ui/widget/page_indicator.dart';
@@ -11,7 +11,8 @@ import 'package:lottie/lottie.dart';
 /// Animations are also each resized with differents values (due to the client).
 /// Same for the text.
 class ExplanationPage extends StatefulWidget {
-  const ExplanationPage({super.key});
+  bool goHome = false;
+  ExplanationPage({super.key,this.goHome = false});
 
   @override
   State<ExplanationPage> createState() => _ExplanationPageState();
@@ -24,11 +25,15 @@ class _ExplanationPageState extends State<ExplanationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kDarkBackground,
+      backgroundColor: kPrimary,
       body: BlocConsumer<FirstLaunchBloc, FirstLaunchState>(
         listener: (context, state) {
           if (state is FirstLaunchSet) {
-            Navigator.of(context).pushNamedAndRemoveUntil('/auth/sign_up', (Route<dynamic> route) => false);
+            if(widget.goHome){
+              Navigator.pushReplacementNamed(context, "/home");
+            }else{
+              Navigator.of(context).pushNamedAndRemoveUntil('/auth/sign_up', (Route<dynamic> route) => false);
+            }
           }
         },
         builder: (context, state) {
@@ -52,8 +57,8 @@ class _ExplanationPageState extends State<ExplanationPage> {
                               SizedBox(height: constraints.maxHeight * 0.15),
                               SizedBox(
                                 height: constraints.maxHeight * 0.50,
-                                child: Lottie.asset(
-                                    "assets/animations/people.json"),
+                                child: Image.asset(
+                                    "assets/images/explorez.png"),
                               ),
                               const SizedBox(height: 30),
                               Text(
@@ -86,8 +91,8 @@ class _ExplanationPageState extends State<ExplanationPage> {
                                 SizedBox(height: constraints.maxHeight * 0.15),
                                 SizedBox(
                                   height: constraints.maxHeight * 0.50,
-                                  child: Lottie.asset(
-                                      "assets/animations/time.json"),
+                                  child: Image.asset(
+                                      "assets/images/Consultez.png"),
                                 ),
                                 const SizedBox(height: 30),
                                 Text(
@@ -111,7 +116,7 @@ class _ExplanationPageState extends State<ExplanationPage> {
                               ],
                             );
                           })),
-                      Padding(
+                      Container(
                         padding: const EdgeInsets.all(kPadding20),
                         child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
                           return Column(
@@ -121,9 +126,13 @@ class _ExplanationPageState extends State<ExplanationPage> {
                                 height: constraints.maxHeight * 0.50,
                                 child: Padding(
                                   padding: const EdgeInsets.only(bottom: 30),
-                                      child: FractionallySizedBox(
-                                    child: Lottie.asset(
-                                      "assets/animations/validation.json",
+                                  child: FractionallySizedBox(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(16.0), // Set border radius here
+                                      child: Lottie.asset(
+                                        "assets/animations/map.json",
+                                        fit: BoxFit.cover, // To ensure the animation fits within the bounds
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -151,47 +160,53 @@ class _ExplanationPageState extends State<ExplanationPage> {
                           );
                         }),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(kPadding20),
-                        child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-                          return Column(
-                            children: [
-                              SizedBox(height: constraints.maxHeight * 0.15),
-                              SizedBox(
-                                height: constraints.maxHeight * 0.50,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 40, bottom: 40),
-                                  child: FractionallySizedBox(
-                                    child: Lottie.asset(
-                                      "assets/animations/treasure.json",
+                      Stack(
+                        children: [
+                          Center(
+                            child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+                              return Container(child: Lottie.asset("assets/animations/confetis.json",width: constraints.maxWidth,height: constraints.maxHeight,fit: BoxFit.fill));
+                            }),
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(kPadding20),
+                              child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+                                return Column(
+                                  children: [
+                                    SizedBox(height: constraints.maxHeight * 0.15),
+                                    SizedBox(
+                                      height: constraints.maxHeight * 0.50,
+                                      child: Image.asset(
+                                        fit: BoxFit.fill,
+                                        "assets/images/Gagnez.png",
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 30),
-                              Text(
-                                "Gagnez !",
-                                style: kBoldARPDisplay25.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(height: kPadding5),
-                              FractionallySizedBox(
-                                widthFactor: 0.9,
-                                child: Text(
-                                  "Échangez vos Diamz contre des cadeaux exclusifs. Vos visites responsables sont ainsi récompensées !",
-                                  style: kRegularNunito19.copyWith(
-                                    color: Colors.white,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              const Spacer(),
-                            ],
-                          );
-                        }),
-                      ),
+                                    const SizedBox(height: 30),
+                                    Text(
+                                      "Gagnez !",
+                                      style: kBoldARPDisplay25.copyWith(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(height: kPadding5),
+                                    FractionallySizedBox(
+                                      widthFactor: 0.9,
+                                      child: Text(
+                                        "Échangez vos Diamz contre des cadeaux exclusifs. Vos visites responsables sont ainsi récompensées !",
+                                        style: kRegularNunito19.copyWith(
+                                          color: Colors.white,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                  ],
+                                );
+                              }),
+                            ),
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -211,16 +226,12 @@ class _ExplanationPageState extends State<ExplanationPage> {
                           disabledColor: Colors.transparent,
                           onPressed: currentIndex == 3
                               ? () {
-                                  context.read<FirstLaunchBloc>().add(SetFirstLaunch());
-                                }
+                            context.read<FirstLaunchBloc>().add(SetFirstLaunch());
+                          }
                               : null,
-                          icon: Icon(
-                            CupertinoIcons.arrow_right,
-                            size: 32,
-                            color: currentIndex == 3
-                                ? Colors.white
-                                : Colors.transparent,
-                          ),
+                          icon: RotatedBox(quarterTurns:2,child: SvgPicture.asset("assets/svg/arrow_left_svg.svg",color: currentIndex == 3
+                              ? Colors.white
+                              : Colors.transparent,height: 22,width: 22,)),
                         ),
                       ),
                     )

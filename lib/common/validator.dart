@@ -49,7 +49,7 @@ class Validator {
   }
 
   static String? nicknameHasGoodFormat(String? value) {
-    if (value == null || value.length < 3 || value.length > 10) {
+    if (value == null || value.length < 3 || value.length > 12) {
       return 'Le pseudo doit comporter entre 3 et 10 caractères.';
     }
     return null;

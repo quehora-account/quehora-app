@@ -6,7 +6,7 @@ class Alert {
   static showError(BuildContext context, String text) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: const Color(0xFF0E1626),
+        backgroundColor: kPrimary,
         content: Text(
           text,
           textAlign: TextAlign.center,

@@ -28,6 +28,7 @@ export class CreateSpotDto {
   playlistIds: string[];
   density: number[];
   exceptionalOpenHours: ExceptionalOpenHoursDto[];
+  allCrowdReports: LastCrowdReportDto[];
   openHours: OpenHoursDto[];
   popularTimes: Map<string, number>[];
   lastCrowdReport: LastCrowdReportDto | null;
@@ -62,6 +63,7 @@ export class CreateSpotDto {
     openHours,
     lastCrowdReport,
     balancePremium,
+    allCrowdReports,
     pulsePremium,
     rating,
   } : {
@@ -85,6 +87,7 @@ export class CreateSpotDto {
         playlistIds: string[],
         density: number[],
         exceptionalOpenHours: ExceptionalOpenHoursDto[],
+        allCrowdReports: LastCrowdReportDto[],
         openHours: OpenHoursDto[],
         popularTimes: Map<string, number>[],
         lastCrowdReport: LastCrowdReportDto | null,
@@ -114,6 +117,7 @@ export class CreateSpotDto {
     this.playlistIds = playlistIds;
     this.density = density;
     this.exceptionalOpenHours = exceptionalOpenHours;
+    this.allCrowdReports = allCrowdReports;
     this.openHours = openHours;
     this.lastCrowdReport = lastCrowdReport;
     this.balancePremium = balancePremium;
@@ -143,6 +147,8 @@ export class CreateSpotDto {
       cityId: json.cityId,
       regionId: json.regionId,
       playlistIds: json.playlistIds,
+      allCrowdReports: LastCrowdReportDto.fromJsons(
+              json.allCrowdReports),
       exceptionalOpenHours: ExceptionalOpenHoursDto.fromJsons(
         json.exceptionalOpenHours),
       openHours: OpenHoursDto.fromJsons(json.openHours),
@@ -187,6 +193,8 @@ export class CreateSpotDto {
       "playlistIds": this.playlistIds,
       "exceptionalOpenHours": ExceptionalOpenHoursDto.toJsons(
         this.exceptionalOpenHours),
+      "allCrowdReports": LastCrowdReportDto.toJsons(
+                this.allCrowdReports),
       "openHours": OpenHoursDto.toJsons(this.openHours),
       "popularTimes": this.popularTimes,
       "lastCrowdReport": this.lastCrowdReport?.toJson() ?? null,

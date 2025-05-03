@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hoora/bloc/first_launch/first_launch_bloc.dart';
 import 'package:hoora/common/decoration.dart';
 import 'package:hoora/common/alert.dart';
@@ -37,7 +37,7 @@ class RequestGeolocationPage extends StatelessWidget {
                         child: Align(
                           alignment: Alignment.bottomCenter,
                           child: Lottie.asset(
-                            "assets/animations/gps.json",
+                            "assets/animations/gps_green.json",
                             height: 80,
                             width: 80,
                           ),
@@ -63,11 +63,7 @@ class RequestGeolocationPage extends StatelessWidget {
                           onPressed: () {
                             context.read<FirstLaunchBloc>().add(RequestGeolocation());
                           },
-                          icon: const Icon(
-                            CupertinoIcons.arrow_right,
-                            size: 32,
-                            color: kPrimary,
-                          ),
+                            icon:  RotatedBox(quarterTurns:2,child: SvgPicture.asset("assets/svg/arrow_left_svg.svg",color: kPrimary,height: 22,width: 22,)),
                         ),
                       )
                     ],

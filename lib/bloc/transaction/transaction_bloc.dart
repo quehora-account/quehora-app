@@ -25,9 +25,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(InitLoading());
       transactions = await transactionRepository.getTransactions();
       emit(InitSuccess());
-    } catch (exception, stack) {
+    } catch (exception) {
       /// Report crash to Crashlytics
-      crashRepository.report(exception, stack);
+       //crashRepository.report(exception, stack);
 
       /// Format exception to be displayed.
       AlertException alertException = AlertException.fromException(exception);

@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hoora/bloc/user/user_bloc.dart';
 import 'package:hoora/common/alert.dart';
 import 'package:hoora/common/decoration.dart';
@@ -84,11 +84,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          icon: const Icon(
-                            CupertinoIcons.arrow_left,
-                            size: 32,
-                            color: kPrimary,
-                          ),
+                            icon:  SvgPicture.asset("assets/svg/arrow_left_svg.svg",color: kPrimary,height: 22,width: 22,),
                         ),
                       ),
                       const Center(
@@ -100,7 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       SizedBox(
                         width: 140,
                         child: ElevatedButton(
-                          style: kButtonRoundedPrimary3Style,
+                          style: kButtonRoundedStyle,
                           onPressed: state is UpdateProfileLoading
                               ? null
                               : () {
@@ -125,13 +121,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                       height: 20,
                                       width: 20,
                                       child: CircularProgressIndicator(
-                                        color: kPrimary,
+                                        color: Colors.white,
                                       ),
                                     ),
                                   )
-                                : const Text(
+                                :  Text(
                                     "Sauvegarder",
-                                    style: kBoldNunito16,
+                                    style: kBoldNunito16.copyWith(color: Colors.white),
                                   ),
                           ),
                         ),
@@ -143,13 +139,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           "Email",
-                          style: kRegularNunito14,
+                          style: kBalooPaaji12,
                         ),
                       ),
                       const SizedBox(height: kPadding5),
                       TextFormField(
                         readOnly: true,
-                        style: kRegularNunito18,
+                        style: kRegularNunito16,
                         decoration: kTextFieldStyle,
                         controller: emailController,
                       ),
@@ -160,16 +156,16 @@ class _ProfilePageState extends State<ProfilePage> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           "Pseudo",
-                          style: kRegularNunito14,
+                          style: kBalooPaaji12,
                         ),
                       ),
                       const SizedBox(height: kPadding5),
                       TextFormField(
-                        style: kRegularNunito18,
+                        style: kRegularNunito16,
                         decoration: kTextFieldStyle.copyWith(hintText: ""),
                         controller: nicknameController,
                         validator: Validator.nicknameHasGoodFormat,
-                        maxLength: 10,
+                        maxLength: 12,
                       ),
                       const SizedBox(height: kPadding20),
 
@@ -178,7 +174,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           "Prénom",
-                          style: kRegularNunito14,
+                          style: kBalooPaaji12,
                         ),
                       ),
                       const SizedBox(height: kPadding5),
@@ -194,12 +190,12 @@ class _ProfilePageState extends State<ProfilePage> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           "Nom",
-                          style: kRegularNunito14,
+                          style: kBalooPaaji12,
                         ),
                       ),
                       const SizedBox(height: kPadding5),
                       TextFormField(
-                        style: kRegularNunito18,
+                        style: kRegularNunito16,
                         decoration: kTextFieldStyle.copyWith(hintText: ""),
                         controller: lastnameController,
                       ),
@@ -210,13 +206,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           "Date de naissance",
-                          style: kRegularNunito14,
+                          style: kBalooPaaji12,
                         ),
                       ),
                       const SizedBox(height: kPadding5),
                       TextFormField(
                         readOnly: true,
-                        style: kRegularNunito18,
+                        style: kRegularNunito16,
                         decoration: kTextFieldStyle.copyWith(hintText: ""),
                         controller: birthdayController,
                         onTap: () async {
@@ -242,7 +238,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           "Genre",
-                          style: kRegularNunito14,
+                          style: kBalooPaaji12,
                         ),
                       ),
                       const SizedBox(height: kPadding5),
@@ -258,7 +254,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               isExpanded: true,
                               dropdownColor: Colors.white,
                               borderRadius: BorderRadius.circular(kRadius10),
-                              style: kRegularNunito18,
+                              style: kRegularNunito16,
                               value: gender,
                               underline: Container(),
                               items: const [
@@ -266,19 +262,19 @@ class _ProfilePageState extends State<ProfilePage> {
                                     value: Gender.male,
                                     child: Text(
                                       'Homme',
-                                      style: kRegularNunito18,
+                                      style: kRegularNunito16,
                                     )),
                                 DropdownMenuItem(
                                     value: Gender.female,
                                     child: Text(
                                       'Femme',
-                                      style: kRegularNunito18,
+                                      style: kRegularNunito16,
                                     )),
                                 DropdownMenuItem(
                                     value: Gender.other,
                                     child: Text(
                                       'Autre',
-                                      style: kRegularNunito18,
+                                      style: kRegularNunito16,
                                     )),
                               ],
                               onChanged: (newGender) {
@@ -296,12 +292,12 @@ class _ProfilePageState extends State<ProfilePage> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           "Ville",
-                          style: kRegularNunito14,
+                          style: kBalooPaaji12,
                         ),
                       ),
                       const SizedBox(height: kPadding5),
                       TextFormField(
-                        style: kRegularNunito18,
+                        style: kRegularNunito16,
                         decoration: kTextFieldStyle.copyWith(hintText: ""),
                         controller: cityController,
                       ),
@@ -312,12 +308,12 @@ class _ProfilePageState extends State<ProfilePage> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           "Pays",
-                          style: kRegularNunito14,
+                          style: kBalooPaaji12,
                         ),
                       ),
                       const SizedBox(height: kPadding5),
                       TextFormField(
-                        style: kRegularNunito18,
+                        style: kRegularNunito16,
                         decoration: kTextFieldStyle.copyWith(hintText: ""),
                         controller: countryController,
                       ),

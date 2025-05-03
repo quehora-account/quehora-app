@@ -24,17 +24,22 @@ class AuthRepository {
   }
 
   Future<bool> signInWithGoogle() async {
-    final GoogleSignInAccount? account = await GoogleSignIn().signIn();
+    try{
+      final GoogleSignInAccount? account = await GoogleSignIn().signIn();
 
-    final GoogleSignInAuthentication googleCredential = await account!.authentication;
+      final GoogleSignInAuthentication googleCredential = await account!.authentication;
 
-    final OAuthCredential oAuthCredential = GoogleAuthProvider.credential(
-      accessToken: googleCredential.accessToken!,
-      idToken: googleCredential.idToken,
-    );
+      final OAuthCredential oAuthCredential = GoogleAuthProvider.credential(
+        accessToken: googleCredential.accessToken!,
+        idToken: googleCredential.idToken,
+      );
 
-    UserCredential user = await _instance.signInWithCredential(oAuthCredential);
-    return user.additionalUserInfo!.isNewUser;
+      UserCredential user = await _instance.signInWithCredential(oAuthCredential);
+      return user.additionalUserInfo!.isNewUser;
+    }catch(e){
+      print('SignIn Error thd: $e');
+      rethrow;
+    }
   }
 
   Future<bool> signIn(String email, String password) async {

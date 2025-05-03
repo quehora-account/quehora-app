@@ -1,25 +1,22 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:hoora/bloc/validate_spot/validate_spot_bloc.dart';
-import 'package:hoora/common/sentences.dart';
 import 'package:hoora/common/decoration.dart';
+import 'package:hoora/common/sentences.dart';
 import 'package:hoora/model/spot_model.dart';
-import 'package:hoora/ui/page/map/create_crowd_report_page.dart';
-import 'package:hoora/ui/page/map/spot_validation_page.dart';
 import 'package:hoora/ui/page/spot_page.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:slider_button/slider_button.dart';
+import '../../page/explore/create_crowd_report_page.dart';
+import '../../page/explore/validation_success.dart';
 
-// ignore: must_be_immutable
 class SpotSheet extends StatefulWidget {
   final Spot spot;
   LatLng? userPosition;
-  SpotSheet({super.key, required this.spot, this.userPosition});
+  DateTime selectedDate;
+  SpotSheet({super.key,required this.selectedDate, required this.spot, this.userPosition});
 
   @override
   State<SpotSheet> createState() => _SpotSheetState();
@@ -28,7 +25,9 @@ class SpotSheet extends StatefulWidget {
 class _SpotSheetState extends State<SpotSheet> {
   bool isInCircleRadius = false;
   bool isLoading = false;
-
+  bool isAfter22(){
+    return DateTime.now().hour > 21 || DateTime.now().hour < 7;
+  }
   @override
   void initState() {
     super.initState();
@@ -39,389 +38,413 @@ class _SpotSheetState extends State<SpotSheet> {
 
   @override
   Widget build(BuildContext context) {
+    int crowdReportAvg = widget.spot.crowdReportAverageAt(DateTime.now());
+    final awaitingTime = widget.spot.awaitingTimeAverage(DateTime.now());
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: kPadding5),
-          child: Text(
-            "Affluences signalées il y a moins de deux heures.",
-            style: kRegularNunito12.copyWith(
-              color: Colors.white,
+    return Scaffold(
+      backgroundColor:widget.spot.isClosedAt(DateTime.now()) || isAfter22()?kBackground2:widget.spot.getGemsNow() != 0
+          ? kOffPeakTime
+          : kFullTime,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            alignment: Alignment.topLeft,
+            padding: const EdgeInsets.only(top: 60,left: kPadding40),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child:  SvgPicture.asset("assets/svg/arrow_left_svg.svg",color: kPrimary,height: 22,width: 22,),
             ),
           ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            color: isInCircleRadius ? kSecondary : kPrimary,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(kRadius20),
-              topRight: Radius.circular(kRadius20),
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(kPadding20),
-            child: Column(
-              children: [
-                if (!widget.spot.isClosedAt(DateTime.now(), onlyHour: false))
-                  buildCircles(),
-                buildIso(),
-                buildDiscoverButton(),
-                const SizedBox(height: kPadding10),
-                FractionallySizedBox(
-                  widthFactor: 0.7,
-                  child: Text(
-                    widget.spot.name,
-                    style: kBoldARPDisplay16.copyWith(
-                      color: isInCircleRadius ? kPrimary : Colors.white,
-                    ),
-                    textAlign: TextAlign.center,
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kPadding20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height:100,
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+
+                        if (crowdReportAvg!=-1)
+                          crowdReport(crowdReportAvg)
+                        else
+                          const SizedBox(width: 90,height: 50,),
+
+                        if (!widget.spot.isClosedAt(DateTime.now(), onlyHour: false))
+                          gemCircle(),
+
+                        if (crowdReportAvg!=-1 && awaitingTime!='0\'' )
+                          crowdWaitingTime(awaitingTime)
+                        else
+                          const SizedBox(width: 90,height: 50,),
+                      ],),
                   ),
-                ),
-                const SizedBox(height: kPadding40),
-                buildButtons(),
-                if (!isInCircleRadius)
-                  Padding(
-                    padding: const EdgeInsets.only(top: kPadding10),
+                  Stack(children: [
+                    Container(
+                      alignment: Alignment.center,
+                      child: buildIso(crowdReportAvg),),
+                  ]),
+                  const SizedBox(height: kPadding10),
+                  FractionallySizedBox(
+                    widthFactor: 0.7,
                     child: Text(
-                      "Rapprochez vous du site pour pouvoir valider",
-                      style: kRegularNunito14.copyWith(
-                        color: Colors.white,
+                      widget.spot.name,
+                      style: kBoldARPDisplay16.copyWith(color: Colors.black),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: kPadding20),
+                  widget.spot.isClosedAt(DateTime.now())?Container(height: 40,): buildButtons(),
+                  if (!isInCircleRadius && widget.userPosition!=null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: kPadding10),
+                      child: Text(
+                        "Vous êtes à ${widget.spot.getDistance(widget.userPosition!)} du spot",
+                        style: kRegularNunito14,
                       ),
                     ),
-                  ),
-                SizedBox(height: MediaQuery.of(context).padding.bottom),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ],
-    );    
+        ],
+      ),
+    );
   }
 
   Widget buildButtons() {
-    return Column(children: [
-      SizedBox(
-        height: 50,
-        child: Stack(
-          children: [
-            SizedBox(
-              height: 50,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 0),
+      child: Column(children: [
+
+        if(isAfter22())
+          SizedBox(
+            height: 45,
+            child: Container(
+              decoration: BoxDecoration(
+                color: kAfterHour22,
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    child: Container(
+                      height: 35,
+                      width: 35,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(child: SvgPicture.asset("assets/svg/gem_disable.svg",height: 15,)),
+                    ),
+                  ),
+                  Flexible(
+                    child: Text("Validation impossible après 22h",
+                      style: kBoldNunito16.copyWith(color: const Color(0xff5d5d5d)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        else if(getGems() == 0 )
+          SizedBox(
+            height: 45,
+            child: Container(
+              decoration: BoxDecoration(
+                color: kFullTimeDarker,
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    child: Container(
+                      height: 35,
+                      width: 35,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(child: SvgPicture.asset("assets/svg/gem_disable.svg",height: 15,)),
+                    ),
+                  ),
+                  Flexible(
+                    child: Text("Actuellement en heure pleine",
+                      style: kBoldNunito16.copyWith(color: kPrimary),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        else if(isInCircleRadius)
+          SizedBox(
+            height: 45,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: SliderButton(
+                width: MediaQuery.of(context).size.width,
+                backgroundColor: kPrimary,
+                alignLabel: const Alignment(0, 0),
+                vibrationFlag: false,
+                baseColor: Colors.white.withOpacity(0.5),
+                action: () async {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => ValidationSuccessOrAlreadyPage(userPosition: widget.userPosition!, spot: widget.spot),
+                    ),);
+                  });
+                  return false;
+                },
+                label: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Je valide ma visite",
+                      style: kBoldNunito16.copyWith(color: Colors.white),
+                    ),
+                  ],
+                ),
+                child: Container(
+                  margin: const EdgeInsets.all(6),
+                  height: 35,
+                  width: 35,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(child: SvgPicture.asset("assets/svg/gem.svg",height: 15,)),
+                ),
+              ),
+            ),
+          )
+        else
+          SizedBox(
+            height: 45,
+            child: Container(
+              decoration: BoxDecoration(
+                color: kOffPeakTimeDarker,
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    child: Container(
+                      height: 35,
+                      width: 35,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(child: SvgPicture.asset("assets/svg/gem_disable.svg",height: 15,)),
+                    ),
+                  ),
+                  Flexible(
+                    child: Text("Rapprochez vous pour valider",
+                      style: kBoldNunito16.copyWith(color: kPrimary),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+        const SizedBox(height: kPadding10),
+        if(isInCircleRadius && !isAfter22())
+          SizedBox(
+            height: 45,
+            child: Container(
+              decoration:  BoxDecoration(
+                borderRadius: BorderRadius.circular(25),
+                color: Colors.white,
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x29000000),
+                    offset: Offset(0,4),
+                    blurRadius: 4,
+                  ),
+                ],
+              ),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  shadowColor: Colors.transparent,
                   backgroundColor: Colors.white,
                 ),
                 onPressed: isLoading
                     ? null
                     : () async {
-                        setState(() {
-                          isLoading = true;
-                        });
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CreateCrowdReportPage(
-                              spot: widget.spot,
-                              userPosition: widget.userPosition!,
-                            ),
-                          ),
-                        );
-                        setState(() {
-                          isLoading = false;
-                        });
-                      },
-                child: isLoading
-                    ? const CircularProgressIndicator()
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "Je partage l'affluence",
-                            style: kBoldNunito16,
-                          ),
-                          const SizedBox(width: kPadding10),
-                          SvgPicture.asset("assets/svg/gem.svg"),
-                        ],
-                      ),
-              ),
-            ),
-            if (!isInCircleRadius || widget.spot.isClosedAt(DateTime.now()))
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.4),
-                  borderRadius: BorderRadius.circular(kRadius100),
-                ),
-              )
-          ],
-        ),
-      ),
-      const SizedBox(height: kPadding10),
-      SizedBox(
-        height: 50,
-        child: Stack(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(2.5),
-                child: LayoutBuilder(builder: (_, constraint) {
-                  /// 25 the half of the button size with his padding (55/50 total)
-                  return SliderButton(
-                    width: constraint.maxWidth + 25,
-                    backgroundColor: kPrimary,
-                    alignLabel: const Alignment(0, 0),
-                    shimmer: !(!isInCircleRadius ||
-                        getGems() == 0 ||
-                        widget.spot
-                            .isClosedAt(DateTime.now(), onlyHour: false)),
-                    vibrationFlag: false,
-                    baseColor: Colors.white.withOpacity(0.5),
-                    action: () async {
-                      context.read<ValidateSpotBloc>().add(
-                            ValidateSpot(
-                              spot: widget.spot,
-                              coordinates: [
-                                widget.userPosition!.latitude,
-                                widget.userPosition!.longitude
-                              ],
-                            ),
-                          );
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SpotValidationPage(
-                            spot: widget.spot,
-                            userPosition: widget.userPosition!,
-                          ),
-                        ),
-                      );
-                      return false;
-                    },
-                    label: Padding(
-                      /// 35 the button size
-                      padding: const EdgeInsets.only(left: 35),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Je valide ma visite",
-                            style: kBoldNunito16.copyWith(color: Colors.white),
-                          ),
-                          const SizedBox(width: kPadding10),
-                          SvgPicture.asset("assets/svg/gem.svg"),
-                        ],
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 5),
-                      child: Container(
-                        height: 35,
-                        width: 35,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        child: const Icon(
-                          CupertinoIcons.arrow_right,
-                          color: kPrimary,
-                        ),
+                  setState(() {
+                    isLoading = true;
+                  });
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CreateCrowdReportPage(
+                        spot: widget.spot,
+                        userPosition: widget.userPosition!,
                       ),
                     ),
                   );
-                }),
-              ),
-            ),
-            if (!isInCircleRadius || getGems() == 0 || widget.spot.isClosedAt(DateTime.now(), onlyHour: false))
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.4),
-                  borderRadius: BorderRadius.circular(kRadius100),
-                ),
-              )
-          ],
-        ),
-      ),
-    ]);
-  }
-
-  Widget buildCircles() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        /// Crowd
-
-        if (widget.spot.hasCrowdReportNow())
-          SizedBox(
-            width: 75,
-            child: Column(
-              children: [
-                Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                      color: kPrimary,
-                      borderRadius: BorderRadius.circular(kRadius100),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          spreadRadius: 0,
-                          blurRadius: 3,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                      border: Border.all(
-                        width: 2.5,
-                        color: Colors.white,
-                      )),
-                  child: Center(
-                      child: Padding(
-                    padding: const EdgeInsets.all(kPadding10),
-                    child: SvgPicture.asset(
-                      "assets/svg/smiley_${widget.spot.lastCrowdReport!.intensity}.svg",
-                    ),
-                  )),
-                ),
-                const SizedBox(height: kPadding5),
-                Text(
-                  crowdReportSentences[widget.spot.lastCrowdReport!.intensity - 1],
-                  style: kRegularNunito12.copyWith(color: isInCircleRadius ? kPrimary : kPrimary3),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-        const Spacer(),
-
-        Align(
-          alignment: Alignment.topCenter,
-          child: Column(
-            children: [
-              /// Text
-              SizedBox(
-                height: 30,
-                child: Text(
-                  getHourText(),
-                  style: kRegularNunito12.copyWith(color: isInCircleRadius ? kPrimary : Colors.white),
-                ),
-              ),
-
-              /// Gem
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(kRadius100),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      spreadRadius: 0,
-                      blurRadius: 3,
-                      offset: const Offset(0, 3),
-                    ),
+                  setState(() {
+                    isLoading = false;
+                  });
+                },
+                child: isLoading
+                    ? const CircularProgressIndicator()
+                    : const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Je partage l'affluence",
+                      style: kBoldNunito16,
+                    )
                   ],
                 ),
-                child: Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    color: widget.spot.isSponsoredNow() && getGems() > 0 ? null : kPrimary,
-                    border: Border.all(color: Colors.white, width: 3),
-                    borderRadius: BorderRadius.circular(kRadius100),
-                    gradient: widget.spot.isSponsoredNow() && getGems() > 0
-                        ? const LinearGradient(
-                            colors: [
-                              Color.fromRGBO(187, 177, 123, 1),
-                              Color.fromRGBO(255, 244, 188, 1),
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            stops: [
-                              0,
-                              0.7,
-                            ],
-                          )
-                        : null,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset(
-                        getGems() == 0 ? "assets/svg/grey_gem.svg" : "assets/svg/gem.svg",
-                        height: 17,
-                      ),
-                      const SizedBox(height: 1),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          getGems().toString(),
-                          style: kBoldARPDisplay11.copyWith(
-                            color: widget.spot.isSponsoredNow() && getGems() > 0 ? kPrimary : Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ),
-            ],
-          ),
-        ),
-        const Spacer(),
-
-        // Reports
-        if (widget.spot.hasCrowdReportNow())
-          SizedBox(
-            width: 75,
-            child: Column(
-              children: [
-                Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                      color: kPrimary,
-                      borderRadius: BorderRadius.circular(kRadius100),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          spreadRadius: 0,
-                          blurRadius: 3,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                      border: Border.all(
-                        width: 2.5,
-                        color: Colors.white,
-                      )),
-                  child: Center(
-                      child: Padding(
-                    padding: const EdgeInsets.all(kPadding10),
-                    child: SvgPicture.asset("assets/svg/hour_glass.svg"),
-                  )),
-                ),
-                const SizedBox(height: kPadding5),
-                Text(
-                  getCrowdReportAwaitingTimeSentence(),
-                  style: kRegularNunito12.copyWith(
-                    color: isInCircleRadius ? kPrimary : kPrimary3,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
             ),
           ),
-      ],
+
+      ]),
     );
   }
 
-  Widget buildIso() {
+  Widget gemCircle() {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: widget.spot.getGemsNow() > 0 && !widget.spot.isClosedAt(DateTime.now())?Container(
+        height: 69,
+        width: 69,
+        decoration: BoxDecoration(
+          color: widget.spot.isSponsoredNow() && getGems() > 0 ? null : kPrimary,
+          borderRadius: BorderRadius.circular(kRadius100),
+          gradient: widget.spot.isSponsoredNow() && getGems() > 0
+              ? const LinearGradient(
+            colors: [
+              Color.fromRGBO(187, 177, 123, 1),
+              Color.fromRGBO(255, 244, 188, 1),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: [
+              0,
+              0.7,
+            ],
+          )
+              : null,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              "assets/svg/gem.svg",
+              height: 24,
+              width: 24,
+            ),
+            const SizedBox(height: 4),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                getGems().toString(),
+                style: kBoldARPDisplay20.copyWith(
+                  color: widget.spot.isSponsoredNow() && getGems() > 0 ? kPrimary : Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ):Container(),
+    );
+  }
+
+  Widget crowdWaitingTime(awaitingTime) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20,20,20,0),
+      child: Column(
+        children: [
+          Container(
+            height: 50,
+            width: 50,
+            decoration: const BoxDecoration(
+              color: kPrimary,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+                child: Image.asset(
+                  width: 18,
+                  "assets/images/hour_glass_explanation_page.png",
+                  height: 27,)),
+          ),
+          const SizedBox(height: 4,),
+          SizedBox(
+            width: 65,
+            child: Text(
+              maxLines: 2,
+              "$awaitingTime\nd’attente",
+              textAlign: TextAlign.center,
+              style: kBoldNunito12,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget crowdReport(crowdReportAvg) {
+    return Align(
+      alignment: Alignment.bottomLeft,
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(20,20,20,0),
+        child: Column(
+          children: [
+            Container(
+              height: 50,
+              width: 50,
+              decoration:  BoxDecoration(
+                color: crowdReportAvg <= 5
+                    ? kOffPeakTimeDarker
+                    : kFullTimeDarker,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                  child: SvgPicture.asset(
+                    height: 28,
+                    width: 28,
+                    "assets/svg/smiley_$crowdReportAvg.svg",
+                  )),
+            ),
+            const SizedBox(height: 4,),
+            SizedBox(
+              width: 65,
+              child: Text(
+                maxLines: 2,
+                crowdReportSentences[crowdReportAvg - 1],
+                textAlign: TextAlign.center,
+                style: kBoldNunito12,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildIso(crowdReportAvg) {
     return LayoutBuilder(builder: (context, constraint) {
       return SizedBox(
-        height: constraint.maxWidth * 0.6,
         width: constraint.maxWidth * 0.6,
+        height: constraint.maxWidth * 0.6,
         child: FutureBuilder<String>(
             future: FirebaseStorage.instance.ref().child("spot/iso/${widget.spot.imageIsoPath}").getDownloadURL(),
             builder: (_, snapshot) {
@@ -445,44 +468,41 @@ class _SpotSheetState extends State<SpotSheet> {
                           ),
                         ),
                         child: Stack(
+                          alignment: Alignment.center,
                           children: [
-                            if (widget.spot.isClosedAt(DateTime.now(), onlyHour: false))
-                              Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Spacer(),
-                                    SvgPicture.asset(
-                                      "assets/svg/lock.svg",
-                                      height: 30,
+                            widget.spot.isClosedAt(DateTime.now())? Container(
+                              margin: EdgeInsets.only(top:constraint.maxWidth/4 ),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: 45,
+                                    width: 45,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
                                     ),
-                                    const SizedBox(height: kPadding10),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(
-                                            kRadius100,
-                                          )),
-                                      child: const Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: kPadding10, vertical: kPadding5),
-                                        child: Text(
-                                          "Fermé",
-                                          style: kRegularNunito16,
-                                        ),
-                                      ),
+                                    child: Center( child:SvgPicture.asset("assets/svg/black_lock.svg",width: 18,height: 24,),
                                     ),
-                                    const Spacer(),
-                                  ],
-                                ),
+                                  ),
+                                  const SizedBox(height: kPadding10,),
+                                  Container(
+                                    padding: const EdgeInsets.all(kPadding10),
+                                    decoration: const BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.all( Radius.circular(kRadius20))),
+                                    child: const Text("Fermé",style: kBoldNunito16,),
+                                  ),
+                                ],
                               ),
-                            if (!widget.spot.isClosedAt(DateTime.now(), onlyHour: false) &&
-                                widget.spot.hasCrowdReportNow() &&
-                                widget.spot.lastCrowdReport!.intensity > 1)
+                            ):Container(),
+
+                            if (!widget.spot.isClosedAt(DateTime.now()))
                               Image.asset(
-                                'assets/images/intensity_${widget.spot.lastCrowdReport!.intensity}.png',
+                                'assets/images/${getIntensity(widget.spot)*2}people.png',
                                 height: constraint.maxWidth,
                                 width: constraint.maxWidth,
-                              )
+                              ),
+                            buildDiscoverButton(),
                           ],
                         ));
                   }),
@@ -502,61 +522,46 @@ class _SpotSheetState extends State<SpotSheet> {
   }
 
   Widget buildDiscoverButton() {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          SizedBox(
-            width: 130,
-            height: 35,
-            child: ElevatedButton(
-              onPressed: () async {
-                SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
-
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SpotPage(
-                      spot: widget.spot,
-                    ),
-                  ),
-                );
-                SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: kPrimary3),
-              child: Text(
-                "Découvrir",
-                style: kBoldNunito14.copyWith(color: kPrimary),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Container(
+          height: 35,
+          decoration:  BoxDecoration(
+            borderRadius: BorderRadius.circular(25),
+            color: Colors.white,
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x29000000),
+                offset: Offset(0,3),
+                blurRadius: 3,
               ),
+            ],
+          ),
+          child: ElevatedButton(
+            onPressed: () async {
+              SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SpotPage(
+                    spot: widget.spot,
+                  ),
+                ),
+              );
+              SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+            child: Text(
+              "Découvrir",
+              textAlign: TextAlign.center,
+              style: kBoldNunito14.copyWith(color: kPrimary),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
-  }
-
-  String getCrowdReportAwaitingTimeSentence() {
-    if (widget.spot.lastCrowdReport == null) {
-      return '0\'';
-    }
-
-    if (!widget.spot.isAwaitingTimeNow()) {
-      return "Pas d'attente signalée";
-    }
-
-    int hour = int.parse(widget.spot.lastCrowdReport!.duration.split(":")[0]);
-    int minute = int.parse(widget.spot.lastCrowdReport!.duration.split(":")[1]);
-
-    if (hour < 1) {
-      return "$minute min. d'attente";
-    }
-
-    if (minute < 15) {
-      return "$hour h d'attente";
-    }
-
-    return "${hour}h$minute d'attente";
   }
 
   int getGems() {
@@ -574,6 +579,45 @@ class _SpotSheetState extends State<SpotSheet> {
       return "heure pleine";
     }
     return "heure creuse";
+  }
+
+  int getIntensity(Spot spot) {
+    /// Get density
+    int averageTrafficPoint = spot.calcTrafficPointUsingCrowdReport(DateTime.now());
+    int trafficPoint = spot.getTrafficPointAt(DateTime.now());
+    ///there is a report
+    if(averageTrafficPoint!=-1){
+      if(averageTrafficPoint>=0 && averageTrafficPoint<10){
+        averageTrafficPoint = 10;
+      }
+      if(averageTrafficPoint>-10 && averageTrafficPoint<0){
+        averageTrafficPoint = -10;
+      }
+      trafficPoint = averageTrafficPoint;
+    }
+    switch(trafficPoint){
+      case 30:
+        return 1;
+      case 25:
+        return 2;
+      case 20:
+        return 3;
+      case 15:
+        return 4;
+      case 10:
+        return 5;
+      case -10:
+        return 6;
+      case -15:
+        return 7;
+      case -20:
+        return 8;
+      case -25:
+        return 9;
+      case -30:
+        return 10;
+    }
+    return 1;
   }
 }
 

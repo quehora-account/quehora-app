@@ -10,6 +10,7 @@ import 'package:hoora/repository/crash_repository.dart';
 import 'package:hoora/repository/level_repository.dart';
 import 'package:hoora/repository/offer_repository.dart';
 import 'package:hoora/repository/user_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'user_event.dart';
 part 'user_state.dart';
@@ -96,10 +97,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
 
       emit(InitSuccess());
-    } catch (exception, stack) {
+    } catch (exception) {
       /// Report crash to Crashlytics
-      crashRepository.report(exception, stack);
-
+       //crashRepository.report(exception, stack);
       /// Format exception to be displayed.
       AlertException alertException = AlertException.fromException(exception);
       emit(InitFailed(exception: alertException));
@@ -141,11 +141,16 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         /// Levels will be stored as a static var.
         Level.levels = levels;
         await userRepository.setNickname(event.nickname);
-        emit(SetNicknameSuccess());
+        var temp = (await SharedPreferences.getInstance()).getBool("watch_first_time_tutorial");
+        if(temp!=null){
+          emit(SetNicknameSuccess(hasWatchFirstTimeTutorial: temp));
+        }else{
+          emit(SetNicknameSuccess(hasWatchFirstTimeTutorial: false));
+        }
       }
-    } catch (exception, stack) {
+    } catch (exception) {
       /// Report crash to Crashlytics
-      crashRepository.report(exception, stack);
+      ////crashRepository.report(exception, stack);
 
       /// Format exception to be displayed.
       AlertException alertException = AlertException.fromException(exception);
@@ -185,9 +190,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       user.birthday = event.birthday;
       user.gender = event.gender;
       emit(UpdateProfileSuccess());
-    } catch (exception, stack) {
+    } catch (exception) {
       /// Report crash to Crashlytics
-      crashRepository.report(exception, stack);
+      ////crashRepository.report(exception, stack);
 
       /// Format exception to be displayed.
       AlertException alertException = AlertException.fromException(exception);
@@ -210,9 +215,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
 
       emit(ActivateUnlockedOfferSuccess());
-    } catch (exception, stack) {
+    } catch (exception) {
       /// Report crash to Crashlytics
-      crashRepository.report(exception, stack);
+      ////crashRepository.report(exception, stack);
 
       /// Format exception to be displayed.
       AlertException alertException = AlertException.fromException(exception);

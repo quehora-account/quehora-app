@@ -41,115 +41,121 @@ class _ChallengePageState extends State<ChallengePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocConsumer<ChallengeBloc, ChallengeState>(
-      listener: (context, state) {
-        if (state is InitFailed) {
-          Alert.showError(context, state.exception.message);
-        }
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: BlocConsumer<ChallengeBloc, ChallengeState>(
+        listener: (context, state) {
+          if (state is InitFailed) {
+            Alert.showError(context, state.exception.message);
+          }
 
-        if (state is ClaimSuccess) {
-          /// Show animation
-          setState(() {
-            showAnimation = true;
-          });
+          if (state is ClaimSuccess) {
+            /// Show animation
+            setState(() {
+              showAnimation = true;
+            });
 
-          /// Update user gems
-          context.read<user_bloc.UserBloc>().add(user_bloc.AddGem(gem: state.gem));
+            /// Update user gems
+            context.read<user_bloc.UserBloc>().add(user_bloc.AddGem(gem: state.gem));
 
-          /// Display success message
-          Alert.showSuccessWidget(
-            context,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Vous avez gagné ${state.gem} Diamz !",
-                  style: kBoldARPDisplay13.copyWith(
-                    color: Colors.white,
+            /// Display success message
+            Alert.showSuccessWidget(
+              context,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Vous avez gagné ${state.gem} Diamz !",
+                    style: kBoldARPDisplay13.copyWith(
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                const SizedBox(width: kPadding10),
-                SvgPicture.asset("assets/svg/gem.svg"),
-              ],
-            ),
-          );
-        }
-      },
-      builder: (context, state) {
-        if (state is InitLoading || state is InitFailed) {
-          return const Center(child: CircularProgressIndicator(color: kPrimary));
-        }
-
-        return Stack(
-          children: [
-            if (showAnimation)
-              LottieBuilder.asset(
-                "assets/animations/confetis.json",
-                repeat: false,
-                controller: controller,
-                onLoaded: (composition) {
-                  controller
-                    ..duration = composition.duration
-                    ..forward();
-                },
+                  const SizedBox(width: kPadding10),
+                  SvgPicture.asset("assets/svg/gem.svg"),
+                ],
               ),
-            Column(
-              children: [
-                SizedBox(height: MediaQuery.of(context).padding.top),
-                const Padding(
-                  padding: EdgeInsets.only(top: kPadding20, right: kPadding20),
-                  child: Align(alignment: Alignment.topRight, child: GemButton()),
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is InitLoading || state is InitFailed) {
+            return const Center(child: CircularProgressIndicator(color: kPrimary));
+          }
+
+          return Stack(
+            children: [
+              if (showAnimation)
+                LottieBuilder.asset(
+                  "assets/animations/confetis.json",
+                  repeat: false,
+                  controller: controller,
+                  onLoaded: (composition) {
+                    controller
+                      ..duration = composition.duration
+                      ..forward();
+                  },
                 ),
-                const SizedBox(height: kPadding20),
-                const Padding(
-                  padding: EdgeInsets.only(left: kPadding20),
-                  child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text("Relevez des défis &\nGagnez plus de Diamz !",
-                          style: kBoldARPDisplay18, textAlign: TextAlign.left)),
-                ),
-                const SizedBox(height: kPadding40),
-                Padding(
-                  padding: const EdgeInsets.only(left: kPadding20),
-                  child: Row(
-                    children: [
-                      SvgPicture.asset("assets/svg/challenge_mountain.svg"),
-                      const SizedBox(width: kPadding10),
-                      const Text("Challenges", style: kRBoldNunito18),
-                    ],
+              Column(
+                children: [
+                  SizedBox(height: MediaQuery.of(context).padding.top),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(kPadding20,kPadding20,kPadding20,kPadding40),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Flexible(
+                          child: Text(
+                            "Relevez des défis\n& Gagnez plus de Diamz !",
+                            style: kBoldARPDisplay18,
+                          ),
+                        ),
+                        GemButton(isLight: true,bigGem: true,),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: kPadding10),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: kPadding20),
-                    child: ListView.builder(
-                        itemCount: challengeBloc.challenges.length,
-                        padding: EdgeInsets.zero,
-                        itemBuilder: (context, index) {
-                          Challenge challenge = challengeBloc.challenges[index];
-                          EdgeInsetsGeometry padding = const EdgeInsets.only(bottom: 10);
-
-                          if (index == 0) {
-                            padding = const EdgeInsets.only(top: 10, bottom: 10);
-                          }
-
-                          if (index == challengeBloc.challenges.length - 1 && challengeBloc.challenges.length > 1) {
-                            padding = const EdgeInsets.only(bottom: 20);
-                          }
-
-                          return Padding(
-                            padding: padding,
-                            child: ChallengeCard(key: UniqueKey(), challenge: challenge),
-                          );
-                        }),
+                  Padding(
+                    padding: const EdgeInsets.only(left: kPadding20),
+                    child: Row(
+                      children: [
+                        SvgPicture.asset("assets/svg/challenge_mountain.svg"),
+                        const SizedBox(width: kPadding10),
+                        const Text("Challenges", style: kRBoldNunito18),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
+                  const SizedBox(height: kPadding10),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: kPadding20),
+                      child: ListView.builder(
+                          itemCount: challengeBloc.challenges.length,
+                          padding: EdgeInsets.zero,
+                          itemBuilder: (context, index) {
+                            Challenge challenge = challengeBloc.challenges[index];
+                            EdgeInsetsGeometry padding = const EdgeInsets.only(bottom: 10);
+
+                            if (index == 0) {
+                              padding = const EdgeInsets.only(top: 10, bottom: 10);
+                            }
+
+                            if (index == challengeBloc.challenges.length - 1 && challengeBloc.challenges.length > 1) {
+                              padding = const EdgeInsets.only(bottom: 20);
+                            }
+
+                            return Padding(
+                              padding: padding,
+                              child: ChallengeCard(key: UniqueKey(), challenge: challenge),
+                            );
+                          }),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 

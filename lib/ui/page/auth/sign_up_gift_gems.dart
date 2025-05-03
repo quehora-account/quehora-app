@@ -24,7 +24,7 @@ class SignUpGiftGemsPage extends StatelessWidget {
                 ),
                 const Spacer(),
                 const Text(
-                    "On vous offre 15 Diamz pour\nbien commencer votre\naventure avec nous !",
+                    "On vous offre 100 Diamz pour\nbien commencer votre\naventure avec nous !",
                     style: kBoldARPDisplay14,
                     textAlign: TextAlign.center,
                   ),
@@ -59,7 +59,7 @@ class SignUpGiftGemsPage extends StatelessWidget {
                               child: Align(
                                 alignment: Alignment.bottomCenter,
                                 child: Text(
-                                  "15",
+                                  "100",
                                   style: kBoldARPDisplay20.copyWith(color: Colors.white),
                                 ),
                               ),

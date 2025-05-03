@@ -9,22 +9,16 @@ import 'package:hoora/model/level_model.dart';
 import 'package:hoora/model/offer_model.dart';
 import 'package:hoora/ui/widget/level_card.dart';
 import 'package:hoora/ui/widget/offer/offer_card.dart';
+List<List<Offer>> categories = [];
 
 class OffersPage extends StatefulWidget {
-  const OffersPage({super.key});
+   const OffersPage({super.key});
 
   @override
-  State<OffersPage> createState() => _OffersPageState();
+  State<OffersPage> createState() => OffersPageState();
 }
 
-class _OffersPageState extends State<OffersPage> with AutomaticKeepAliveClientMixin {
-  late OfferBloc offerBloc;
-
-  @override
-  void initState() {
-    super.initState();
-    offerBloc = context.read<OfferBloc>();
-  }
+class OffersPageState extends State<OffersPage> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +29,28 @@ class _OffersPageState extends State<OffersPage> with AutomaticKeepAliveClientMi
         if (state is InitFailed) {
           Alert.showError(context, state.exception.message);
         }
+        if(state is FirstTimeSuccess){
+          debugPrint("offer page InitSuccess hay hay ${state.categories.length}");
+          categories = state.categories;
+        }
+        if (state is GetOffersSuccess) {
+          debugPrint("offer page GetOffersSuccess hay hay ${state.categories.length}");
+
+          if(state.doesFind){
+            categories = state.categories;
+          }
+        }
+        if (state is InitFailed) {
+          Alert.showError(context, state.exception.message);
+        }
+        if (state is InitFailed) {
+          Alert.showError(context, state.exception.message);
+        }
       },
       builder: (context, state) {
-        if (state is InitLoading || state is InitFailed) {
-          return const Center(child: CircularProgressIndicator(color: kPrimary));
+        if (state is InitLoading) {
+          return const Center( child: CircularProgressIndicator(color: kPrimary));
         }
-
         return SingleChildScrollView(
           child: Column(
             children: [
@@ -52,8 +62,8 @@ class _OffersPageState extends State<OffersPage> with AutomaticKeepAliveClientMi
               Builder(builder: (_) {
                 List<Widget> children = [];
 
-                for (int i = 0; i < offerBloc.categories.length; i++) {
-                  List<Offer> offers = offerBloc.categories[i];
+                for (int i = 0; i < categories.length; i++) {
+                  List<Offer> offers = categories[i];
                   Level level = Level.getLevel(i + 1);
 
                   if (offers.isEmpty) {

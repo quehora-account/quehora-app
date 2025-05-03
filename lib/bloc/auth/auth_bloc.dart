@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hoora/common/alert.dart';
 import 'package:hoora/common/globals.dart';
 import 'package:hoora/repository/auth_repository.dart';
@@ -30,10 +31,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(ForgotPasswordLoading());
       await authRepository.forgotPassword(event.email);
       emit(ForgotPasswordSuccess());
-    } catch (exception, stack) {
+    } catch (exception) {
       /// Report crash to Crashlytics
       if (exception is! FirebaseAuthException) {
-        crashRepository.report(exception, stack);
+         //crashRepository.report(exception, stack);
       }
 
       /// Format exception to be displayed.
@@ -47,10 +48,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(SignInLoading());
       await authRepository.signIn(event.email, event.password);
       emit(SignInSuccess(isNewUser: false));
-    } catch (exception, stack) {
+    } catch (exception) {
       /// Report crash to Crashlytics
       if (exception is! FirebaseAuthException) {
-        crashRepository.report(exception, stack);
+         //crashRepository.report(exception, stack);
       }
 
       /// Format exception to be displayed.
@@ -64,9 +65,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(SignInWithAppleLoading());
       bool isNewUser = await authRepository.signInWithApple();
       emit(SignInSuccess(isNewUser: isNewUser));
-    } catch (exception, stack) {
+    } catch (exception) {
       /// Report crash to Crashlytics
-      crashRepository.report(exception, stack);
+       //crashRepository.report(exception, stack);
 
       /// Format exception to be displayed.
       AlertException alertException = AlertException.fromException(exception);
@@ -79,9 +80,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(SignInWithGoogleLoading());
       bool isNewUser = await authRepository.signInWithGoogle();
       emit(SignInSuccess(isNewUser: isNewUser));
-    } catch (exception, stack) {
+    } catch (exception) {
       /// Report crash to Crashlytics
-      crashRepository.report(exception, stack);
+       //crashRepository.report(exception, stack);
 
       /// Format exception to be displayed.
       AlertException alertException = AlertException.fromException(exception);
@@ -94,9 +95,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(SignUpWithAppleLoading());
       bool isNewUser = await authRepository.signInWithApple();
       emit(SignUpSuccess(isNewUser: isNewUser));
-    } catch (exception, stack) {
+    } catch (exception) {
       /// Report crash to Crashlytics
-      crashRepository.report(exception, stack);
+       //crashRepository.report(exception, stack);
 
       /// Format exception to be displayed.
       AlertException alertException = AlertException.fromException(exception);
@@ -109,9 +110,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(SignUpWithGoogleLoading());
       bool isNewUser = await authRepository.signInWithGoogle();
       emit(SignUpSuccess(isNewUser: isNewUser));
-    } catch (exception, stack) {
+    } catch (exception) {
       /// Report crash to Crashlytics
-      crashRepository.report(exception, stack);
+       //crashRepository.report(exception, stack);
 
       /// Format exception to be displayed.
       AlertException alertException = AlertException.fromException(exception);
@@ -124,10 +125,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(SignUpLoading());
       await authRepository.signUp(event.email, event.password);
       emit(SignUpSuccess(isNewUser: true));
-    } catch (exception, stack) {
+    } catch (exception) {
       /// Report crash to Crashlytics
       if (exception is! FirebaseAuthException) {
-        crashRepository.report(exception, stack);
+         //crashRepository.report(exception, stack);
       }
 
       /// Format exception to be displayed.
@@ -140,10 +141,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(SignOutLoading());
       await authRepository.signOut();
+      try{
+        await GoogleSignIn().disconnect();
+        await GoogleSignIn().signOut();
+      }catch(e){}
       emit(SignOutSuccess());
-    } catch (exception, stack) {
+    } catch (exception) {
       /// Report crash to Crashlytics
-      crashRepository.report(exception, stack);
+       //crashRepository.report(exception, stack);
 
       /// Format exception to be displayed.
       AlertException alertException = AlertException.fromException(exception);

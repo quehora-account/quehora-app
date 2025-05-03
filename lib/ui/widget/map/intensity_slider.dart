@@ -22,10 +22,9 @@ class _IntensitySlider extends State<IntensitySlider> {
             padding: const EdgeInsets.symmetric(horizontal: kPadding20),
             child: Center(
               child: Container(
-                height: 20,
-                width: double.infinity,
+                height: 16,
                 decoration: BoxDecoration(
-                  color: kSecondary,
+                  color: const Color(0xffE2F1E9),
                   borderRadius: BorderRadius.circular(kRadius100),
                 ),
               ),
@@ -39,13 +38,13 @@ class _IntensitySlider extends State<IntensitySlider> {
                   activeTrackColor: kSecondary,
                   inactiveTrackColor: kSecondary,
                   thumbShape: const SliderThumbCircle(
-                    thumbRadius: 23,
+                    thumbRadius: 24.5,
                     min: 1,
-                    max: 9,
+                    max: 10,
                   )),
               child: Slider(
                 min: 1,
-                max: 9,
+                max: 10,
                 divisions: 9,
                 value: intensity.toDouble(),
                 onChanged: (newDensity) {

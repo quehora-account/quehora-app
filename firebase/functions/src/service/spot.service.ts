@@ -1,40 +1,49 @@
 import {CreateSpotDto} from "../common/dto/create_spot.dto";
-import { ValidateSpotDto } from "../common/dto/validation_spot.dto";
+import {ValidateSpotDto } from "../common/dto/validation_spot.dto";
 import {TransactionType} from "../common/entity/transaction.entity";
 import {SpotRepository} from "../repository/spot.repository";
 import {TransactionRepository} from "../repository/transaction.repository";
 import {UserRepository} from "../repository/user.repository";
 
 export class SpotService {
-  static trafficPoints : number[][] = [
-    [5, 10, 15, 20],
-    [10, 15, 20, 25],
-    [15, 20, 25, 30],
-    [20, 25, 30, 35],
-    [25, 30, 35, 40],
-  ];
+  static trafficPoints: number[][] = [
+    [30, 30, 25, 20, 15, 10, -10, -15],
+    [30, 25, 20, 15, 10, -10, -15, -20],
+    [25, 20, 15, 10, -10, -15, -20, -25],
+    [20, 15, 10, -10, -15, -20, -25, -30],
+    [15, 10, -10, -15, -20, -25, -30, -30],
+];
 
-  static _getTrafficPoint(density: number, popularTime : number, average: number) : number {
+
+  static _getTrafficPoint2(density: number, popularTime : number, average: number) : number {
     if (popularTime === 0) {
       return 0;
     }
 
     const difference: number = average - popularTime;
+    if (difference <= -30) {
+      return this.trafficPoints[density - 1][7];
+    }
+    if (difference <= -20) {
+      return this.trafficPoints[density - 1][6];
+    }
+    if (difference <= -10) {
+      return this.trafficPoints[density - 1][5];
+    }
     if (difference <= 0) {
-      return 0;
+      return this.trafficPoints[density - 1][4];
     }
-
     if (difference <= 10) {
-      return this.trafficPoints[density - 1][0];
+      return this.trafficPoints[density - 1][3];
     }
-
     if (difference <= 20) {
-      return this.trafficPoints[density - 1][1];
-    }
-    if (difference <= 30) {
       return this.trafficPoints[density - 1][2];
     }
-    return this.trafficPoints[density - 1][3];
+
+    if (difference <= 30) {
+      return this.trafficPoints[density - 1][1];
+    }
+    return this.trafficPoints[density - 1][0];
   }
 
   /**
@@ -61,7 +70,7 @@ export class SpotService {
       const gpd = new Map<string, number>();
 
       for (const [key, value] of Object.entries(popularTime)) {
-        gpd.set(key, this._getTrafficPoint(density, value, average));
+        gpd.set(key, this._getTrafficPoint2(density, value, average));
       }
 
       trafficPoints.push(gpd);

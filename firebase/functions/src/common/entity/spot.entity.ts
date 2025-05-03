@@ -30,6 +30,7 @@ export class SpotEntity {
   playlistIds: string[];
   density: number[];
   exceptionalOpenHours: ExceptionalOpenHoursEntity[];
+  allCrowdReports: LastCrowdReportEntity[];
   openHours: OpenHoursEntity[];
   trafficPoints: Map<string, number>[];
   popularTimes: Map<string, number>[];
@@ -64,6 +65,7 @@ export class SpotEntity {
     playlistIds,
     exceptionalOpenHours,
     openHours,
+    allCrowdReports,
     trafficPoints,
     lastCrowdReport,
     balancePremium,
@@ -92,6 +94,7 @@ export class SpotEntity {
         playlistIds: string[],
         density: number[],
         exceptionalOpenHours: ExceptionalOpenHoursEntity[],
+        allCrowdReports: LastCrowdReportEntity[],
         openHours: OpenHoursEntity[],
         trafficPoints: Map<string, number>[],
         popularTimes: Map<string, number>[],
@@ -126,6 +129,7 @@ export class SpotEntity {
     this.playlistIds = playlistIds;
     this.density = density;
     this.exceptionalOpenHours = exceptionalOpenHours;
+    this.allCrowdReports = allCrowdReports;
     this.openHours = openHours;
     this.trafficPoints = trafficPoints;
     this.lastCrowdReport = lastCrowdReport;
@@ -157,6 +161,8 @@ export class SpotEntity {
       cityId: json.cityId,
       regionId: json.regionId,
       playlistIds: json.playlistIds,
+      allCrowdReports: LastCrowdReportEntity.fromJsons(
+        json.allCrowdReports),
       exceptionalOpenHours: ExceptionalOpenHoursEntity.fromJsons(
         json.exceptionalOpenHours),
       openHours: OpenHoursEntity.fromJsons(json.openHours),

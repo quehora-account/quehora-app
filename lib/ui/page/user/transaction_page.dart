@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hoora/bloc/transaction/transaction_bloc.dart';
 import 'package:hoora/common/decoration.dart';
 import 'package:hoora/model/transaction_model.dart';
@@ -50,11 +50,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: const Icon(
-                        CupertinoIcons.arrow_left,
-                        size: 32,
-                        color: kPrimary,
-                      ),
+                        icon:  SvgPicture.asset("assets/svg/arrow_left_svg.svg",color: kPrimary,height: 22,width: 22,),
                     ),
                   ),
                   const Text(

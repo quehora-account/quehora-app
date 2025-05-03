@@ -40,9 +40,9 @@ class RankingBloc extends Bloc<RankingEvent, RankingState> {
 
       users = users.take(50).toList();
       emit(InitSuccess());
-    } catch (exception, stack) {
+    } catch (exception) {
       /// Report crash to Crashlytics
-      crashRepository.report(exception, stack);
+       //crashRepository.report(exception, stack);
 
       /// Format exception to be displayed.
       AlertException alertException = AlertException.fromException(exception);

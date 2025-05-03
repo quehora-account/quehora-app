@@ -77,7 +77,7 @@ class _ChallengeCardState extends State<ChallengeCard> {
                         children: [
                           Text(
                             widget.challenge.name,
-                            style: kBoldARPDisplay12.copyWith(color: widget.challenge.getTextColor()),
+                            style: kBoldARPDisplay14.copyWith(color: widget.challenge.getTextColor()),
                             maxLines: 1,
                             overflow: TextOverflow.clip,
                           ),
@@ -196,7 +196,7 @@ class _ChallengeCardState extends State<ChallengeCard> {
       padding: const EdgeInsets.symmetric(horizontal: kPadding10),
       height: 30,
       decoration: BoxDecoration(
-        color: kGemsIndicator,
+        color: kBackground,
         borderRadius: BorderRadius.circular(kRadius100),
       ),
       child: Wrap(

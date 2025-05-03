@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -14,197 +13,189 @@ import 'package:hoora/ui/page/offer/offer_unlocked_success_page.dart';
 class OfferPage extends StatelessWidget {
   final Offer offer;
   final bool viewOnly;
-  const OfferPage({super.key, required this.offer, this.viewOnly = false});
+  bool isFromSpotPage = false;
+  OfferPage({super.key, required this.offer, this.viewOnly = false,this.isFromSpotPage=false});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBackground,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: kPadding20,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: kPadding40,
+            ),
+            /// back button
+            Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.symmetric(horizontal: kPadding20),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                  icon:  SvgPicture.asset("assets/svg/arrow_left_svg.svg",color: kPrimary,height: 22,width: 22,),
               ),
+            ),
 
-              /// back button
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: kPadding20),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(
-                      CupertinoIcons.arrow_left,
-                      size: 32,
-                      color: kPrimary,
-                    ),
+            /// Pictures
+            SizedBox(
+              height: 132.5,
+              width: double.infinity,
+              child: Stack(
+                children: [
+                  SizedBox(
+                    height: 100,
+                    width: double.infinity,
+                    child: getOfferImage(),
                   ),
-                ),
-              ),
-
-              /// Pictures
-              SizedBox(
-                height: 132.5,
-                width: double.infinity,
-                child: Stack(
-                  children: [
-                    SizedBox(
-                      height: 100,
-                      width: double.infinity,
-                      child: getOfferImage(),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: kPadding20),
-                        child: Container(
-                          height: 65,
-                          width: 65,
-                          decoration: BoxDecoration(
-                            color: kBackground,
-                            borderRadius: BorderRadius.circular(kRadius100),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                spreadRadius: 0,
-                                blurRadius: 3,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: getCompanyImage(),
-                          ),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: kPadding20),
+                      child: Container(
+                        height: 65,
+                        width: 65,
+                        decoration: BoxDecoration(
+                          color: kBackground,
+                          borderRadius: BorderRadius.circular(kRadius100),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              spreadRadius: 0,
+                              blurRadius: 3,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15),
+                          child: getCompanyImage(),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
 
-              /// title
-              const SizedBox(height: kPadding10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: kPadding20),
-                child: Center(
-                  child: FractionallySizedBox(
-                    widthFactor: 0.8,
-                    child: Center(
-                      child: Text(
-                        offer.company!.name,
-                        style: kBoldARPDisplay16,
-                        textAlign: TextAlign.center,
-                      ),
+            /// title
+            const SizedBox(height: kPadding10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kPadding20),
+              child: Center(
+                child: FractionallySizedBox(
+                  widthFactor: 0.8,
+                  child: Center(
+                    child: Text(
+                      offer.company!.name,
+                      style: kBoldARPDisplay16,
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: kPadding5),
+            ),
+            const SizedBox(height: kPadding5),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: kPadding20),
-                child: Center(
-                  child: FractionallySizedBox(
-                    widthFactor: 0.8,
-                    child: Center(
-                      child: Text(
-                        offer.title,
-                        style: kRegularNunito12,
-                        textAlign: TextAlign.center,
-                      ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kPadding20),
+              child: Center(
+                child: FractionallySizedBox(
+                  widthFactor: 0.8,
+                  child: Center(
+                    child: Text(
+                      offer.title,
+                      style: kRegularNunito12,
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ),
               ),
+            ),
 
-              const SizedBox(height: kPadding20),
+            const SizedBox(height: kPadding20),
 
-              /// Description
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: kPadding20),
-                child: Text(
-                  "Présentation de l'Offre :",
-                  style: kBoldNunito12,
-                ),
+            /// Description
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: kPadding20),
+              child: Text(
+                "Présentation de l'Offre :",
+                style: kBoldNunito12,
               ),
-              const SizedBox(height: kPadding20),
+            ),
+            const SizedBox(height: kPadding20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kPadding20),
+              child: Text(
+                offer.description,
+                style: kRegularNunito12,
+              ),
+            ),
+            const SizedBox(height: kPadding20),
+
+            /// instructions
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: kPadding20),
+              child: Text(
+                "Comment profiter de l'Offre :",
+                style: kBoldNunito12,
+              ),
+            ),
+            const SizedBox(height: kPadding20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kPadding20),
+              child: buildInstructions(),
+            ),
+
+            const SizedBox(height: kPadding20),
+
+            /// conditions
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: kPadding20),
+              child: Text(
+                "Conditions et validité",
+                style: kBoldNunito12,
+              ),
+            ),
+            const SizedBox(height: kPadding20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kPadding20),
+              child: buildConditions(),
+            ),
+            const SizedBox(height: kPadding20),
+            if (!viewOnly)
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: kPadding20),
-                child: Text(
-                  offer.description,
-                  style: kRegularNunito12,
-                ),
-              ),
-              const SizedBox(height: kPadding20),
-
-              /// instructions
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: kPadding20),
-                child: Text(
-                  "Comment profiter de l'Offre :",
-                  style: kBoldNunito12,
-                ),
-              ),
-              const SizedBox(height: kPadding20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: kPadding20),
-                child: buildInstructions(),
-              ),
-
-              const SizedBox(height: kPadding20),
-
-              /// conditions
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: kPadding20),
-                child: Text(
-                  "Conditions et validité",
-                  style: kBoldNunito12,
-                ),
-              ),
-              const SizedBox(height: kPadding20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: kPadding20),
-                child: buildConditions(),
-              ),
-              const SizedBox(height: kPadding20),
-              if (!viewOnly)
-                Padding(
-                  padding: const EdgeInsets.only(left: kPadding20, right: kPadding20, bottom: kPadding20),
-                  child: SizedBox(
-                    height: 50,
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: kButtonRoundedStyle,
-                      onPressed: context.read<UserBloc>().user.gem >= offer.price
-                          ? () {
-                              showUnlockPopup(context);
-                            }
-                          : () {
-                              Alert.showSuccess(
-                                  context, "Vous n'avez pas assez de Diamz.");
-                            },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Convertir ${offer.price.toString()}",
-                            style: kBoldNunito16.copyWith(color: Colors.white),
-                          ),
-                          const SizedBox(width: kPadding5),
-                          SvgPicture.asset("assets/svg/gem.svg"),
-                        ],
-                      ),
+                padding: const EdgeInsets.only(left: kPadding20, right: kPadding20, bottom: kPadding20),
+                child: SizedBox(
+                  height: 50,
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: kButtonRoundedStyle,
+                    onPressed: context.read<UserBloc>().user.gem >= offer.price
+                        ? () {
+                            showUnlockPopup(context);
+                          }
+                        : () {
+                            Alert.showSuccess(
+                                context, "Vous n'avez pas assez de Diamz.");
+                          },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Convertir ${offer.price.toString()}",
+                          style: kBoldNunito16.copyWith(color: Colors.white),
+                        ),
+                        const SizedBox(width: kPadding5),
+                        SvgPicture.asset("assets/svg/gem.svg"),
+                      ],
                     ),
                   ),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
       ),
     );
@@ -254,7 +245,7 @@ class OfferPage extends StatelessWidget {
                       onPressed: state is UnlockLoading
                           ? null
                           : () {
-                              context.read<OfferBloc>().add(Unlock(offer: offer));
+                              context.read<OfferBloc>().add(Unlock(offer: offer,isFromSpotPage: isFromSpotPage));
                             },
                       style: kButtonRoundedStyle,
                       child: state is UnlockLoading

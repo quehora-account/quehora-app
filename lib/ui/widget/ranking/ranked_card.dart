@@ -33,14 +33,14 @@ class RankedCard extends StatelessWidget {
               child: Center(
                 child: Text(
                   position.toString(),
-                  style: kBoldARPDisplay14,
+                  style: 200<100?kBoldARPDisplay18:kBoldARPDisplay14,
                 ),
               ),
             ),
             const SizedBox(width: kPadding10),
             Expanded(
               child: Text(
-                user.nickname,
+                "@${user.nickname}",
                 style: kBoldARPDisplay16.copyWith(color: isLightTheme ? kPrimary : Colors.white),
                 overflow: TextOverflow.clip,
               ),
@@ -48,7 +48,7 @@ class RankedCard extends StatelessWidget {
             const SizedBox(width: kPadding10),
             Text(
               user.experience.toString(),
-              style: kBoldARPDisplay13.copyWith(color: isLightTheme ? kPrimary : Colors.white),
+              style: kBoldARPDisplay14.copyWith(color: isLightTheme ? kPrimary : Colors.white),
             ),
             const SizedBox(width: kPadding10),
             SvgPicture.asset(

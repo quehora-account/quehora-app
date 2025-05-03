@@ -4,14 +4,15 @@ import 'package:hoora/common/decoration.dart';
 class HourSlider extends StatefulWidget {
   final void Function(int)? onChangedEnd;
   final void Function(int)? onChanged;
-  final int initialHour;
-  const HourSlider({super.key, this.onChangedEnd, this.onChanged, required this.initialHour});
-
+  int initialHour;
+  Color thumbColor = kPrimary;
+  double height = 20;
+  HourSlider({super.key,this.height = 20, this.onChangedEnd, this.onChanged, required this.initialHour,this.thumbColor = kPrimary});
   @override
-  State<HourSlider> createState() => _HourSliderState();
+  State<HourSlider> createState() => HourSliderState();
 }
 
-class _HourSliderState extends State<HourSlider> {
+class HourSliderState extends State<HourSlider> {
   late int hour;
 
   @override
@@ -19,35 +20,36 @@ class _HourSliderState extends State<HourSlider> {
     super.initState();
     hour = widget.initialHour;
   }
-
+  void changeHourFromChevrons(h){
+    setState(() {
+      hour = h;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 40,
+      height: 50,
+      width: double.infinity,
       child: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: kPadding20),
+          SizedBox(
+            width: double.infinity,
             child: Center(
-              child: Container(
-                height: 20,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: kSecondary,
-                  borderRadius: BorderRadius.circular(kRadius100),
-                ),
-              ),
+              child: Image.asset("assets/images/SlideBar.png",fit: BoxFit.fill,),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
+          Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+          ),
             child: SliderTheme(
               data: SliderTheme.of(context).copyWith(
                   trackHeight: 0,
-                  activeTrackColor: kSecondary,
-                  inactiveTrackColor: kSecondary,
-                  thumbShape: const SliderThumbCircle(
-                    thumbRadius: 23,
+                  activeTrackColor: Colors.grey,
+                  inactiveTrackColor: Colors.grey,
+                  thumbShape: SliderThumbCircle(
+                    thumbColor: widget.thumbColor,
+                    thumbRadius: 25,
                     min: 7,
                     max: 21,
                   )),
@@ -85,11 +87,12 @@ class SliderThumbCircle extends SliderComponentShape {
   final double thumbRadius;
   final int min;
   final int max;
-
+  final Color thumbColor;
   const SliderThumbCircle({
     required this.thumbRadius,
     this.min = 0,
     this.max = 10,
+    this.thumbColor = kPrimary
   });
 
   @override
@@ -116,21 +119,17 @@ class SliderThumbCircle extends SliderComponentShape {
 
     /// Thumb Background Color
     final paint = Paint()
-      ..color = kPrimary
+      ..color = thumbColor
       ..style = PaintingStyle.fill;
 
     TextSpan span = TextSpan(
-      style: kBoldNunito20.copyWith(color: Colors.white),
+      style: kBoldNunito20.copyWith(color:thumbColor==kPrimary? Colors.white:kPrimary),
       text: "${getValue(value)}h",
     );
 
     TextPainter tp = TextPainter(text: span, textAlign: TextAlign.center, textDirection: TextDirection.ltr);
     tp.layout();
-    Offset textCenter = Offset(
-        center.dx - (tp.width / 2),
-        center.dy -
-            (tp.height / 3)); // < Initialy 2. But due to the font weird padding, it became 3 to center the text.
-
+    Offset textCenter = Offset(center.dx - (tp.width / 2), center.dy - (tp.height / 3));
     canvas.drawCircle(center, thumbRadius * .9, paint);
     tp.paint(canvas, textCenter);
   }

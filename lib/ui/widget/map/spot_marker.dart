@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hoora/common/decoration.dart';
@@ -5,118 +6,129 @@ import 'package:hoora/model/spot_model.dart';
 
 class SpotMarker extends StatelessWidget {
   final Spot spot;
-  const SpotMarker({super.key, required this.spot});
+  final String imageCode;
+  final DateTime selectedDate;
+  final Function() clicked;
+  const SpotMarker({super.key,required this.clicked, required this.spot, required this.imageCode,required this.selectedDate});
 
   @override
   Widget build(BuildContext context) {
-    /// If closed
-    if (spot.isClosedAt(DateTime.now(), onlyHour: false)) {
-      return Center(
-        child: Container(
-          height: 50,
-          width: 50,
-          decoration: BoxDecoration(
-            color: kPrimary,
-            border: Border.all(color: Colors.white, width: 3),
-            borderRadius: BorderRadius.circular(kRadius100),
-          ),
-          child: Center(
-            child: SvgPicture.asset(
-              "assets/svg/lock.svg",
-              height: 22,
-            ),
-          ),
-        ),
-      );
-    }
-
-    /// Not closed
+    int crowdReportAvg = spot.crowdReportAverageAt(selectedDate);
+    final awaitingTime = spot.awaitingTimeAverage(selectedDate);
     return Stack(
       children: [
         /// Main circle
         Center(
-          child: Container(
-            height: 50,
-            width: 50,
-            decoration: BoxDecoration(
-              color: spot.isSponsoredNow() && getGems() > 0 ? null : kPrimary,
-              border: Border.all(color: Colors.white, width: 3),
-              borderRadius: BorderRadius.circular(kRadius100),
-              gradient: spot.isSponsoredNow() && getGems() > 0
-                  ? const LinearGradient(
-                      colors: [
-                        Color.fromRGBO(187, 177, 123, 1),
-                        Color.fromRGBO(255, 244, 188, 1),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      stops: [
-                        0,
-                        0.7,
-                      ],
-                    )
-                  : null,
+          child: InkWell(
+            onTap: (){
+              clicked();
+            },
+            child: Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                color: spot.isSponsoredNow() && spot.getGemsAt(selectedDate) > 0 ? null :(spot.isClosedAt(selectedDate))?Colors.white: spot.getGemsAt(selectedDate) > 0?kOffPeakTime:kFullTime,
+                border: Border.all(color: Colors.white, width: 3),
+                borderRadius: BorderRadius.circular(kRadius100),
+                gradient: spot.isSponsoredNow() && spot.getGemsAt(selectedDate) > 0
+                    ? const LinearGradient(
+                        colors: [
+                          Color.fromRGBO(187, 177, 123, 1),
+                          Color.fromRGBO(255, 244, 188, 1),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        stops: [
+                          0,
+                          0.7,
+                        ],
+                      )
+                    : null,
+              ),
+              child: Center( child: SvgPicture.string(imageCode)
+              ),
             ),
-
-            /// Gem
-            child: Column(
+          ),
+        ),
+        /// Gem
+        if(spot.getGemsAt(selectedDate)>0 && !spot.isClosedAt(selectedDate))
+           Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            margin: const EdgeInsets.only(bottom: kPadding5),
+            width: 44,
+            height: 18,
+            decoration: BoxDecoration(
+              color: kPrimary,
+              borderRadius: BorderRadius.circular(kRadius100),
+            ),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SvgPicture.asset(
-                  getGems() == 0 ? "assets/svg/grey_gem.svg" : "assets/svg/gem.svg",
-                  height: 14,
-                ),
-                const SizedBox(height: 1),
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    getGems().toString(),
-                    style: kBoldARPDisplay11.copyWith(
-                      color: spot.isSponsoredNow() && getGems() > 0 ? kPrimary : Colors.white,
-                    ),
+                children: [
+                  Text(
+                    spot.getGemsAt(selectedDate).toString(),
+                    style: kBoldARPDisplay13.copyWith(color:Colors.white),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 1,),
+                  SvgPicture.asset(
+                    "assets/svg/gem.svg",
+                    height: 12,
+                    width: 12,
+                  ),
+                ],
             ),
           ),
         ),
 
-        if (spot.hasCrowdReportNow() && spot.isAwaitingTimeNow())
+        if (crowdReportAvg!=-1 && awaitingTime!='0\'' && !spot.isClosedAt(selectedDate) )
           Align(
             alignment: Alignment.topLeft,
             child: Container(
-              height: 35,
-              width: 35,
+              height: 33,
+              width: 33,
               decoration: BoxDecoration(
-                color: const Color.fromRGBO(161, 154, 255, 1),
+                color: kPrimary,
                 borderRadius: BorderRadius.circular(kRadius100),
               ),
               child: Center(
                   child: SvgPicture.asset(
                 "assets/svg/hour_glass.svg",
-                height: 25,
+                height: 20,
               )),
             ),
           ),
-
-        if (spot.hasCrowdReportNow())
+         (spot.isClosedAt(selectedDate))?
+          Align(
+          alignment: Alignment.topRight,
+          child: Container(
+            height: 33,
+            width: 33,
+            decoration: BoxDecoration(
+              color: kPrimary,
+              borderRadius: BorderRadius.circular(kRadius100),
+            ),
+              child: const Center(
+                child: Icon(Icons.lock,size: 20,color: Colors.white,),
+              ),
+          ),
+        )
+        :(crowdReportAvg!=-1)?
           Align(
             alignment: Alignment.topRight,
             child: Container(
-              height: 35,
-              width: 35,
+              height: 32,
+              width: 32,
               decoration: BoxDecoration(
-                color: const Color.fromRGBO(255, 234, 176, 1),
+                color: crowdReportAvg>5?kFullTimeDarker:kOffPeakTimeDarker,
                 borderRadius: BorderRadius.circular(kRadius100),
               ),
               child: Center(
                   child: SvgPicture.asset(
-                "assets/svg/smiley_${spot.lastCrowdReport!.intensity}.svg",
-                height: 25,
+                "assets/svg/smiley_$crowdReportAvg.svg",
+                height: 20,
               )),
             ),
-          ),
+          ):Container(),
       ],
     );
   }

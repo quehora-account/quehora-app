@@ -51,9 +51,9 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
       }
 
       emit(InitSuccess());
-    } catch (exception, stack) {
+    } catch (exception) {
       /// Report crash to Crashlytics
-      crashRepository.report(exception, stack);
+       //crashRepository.report(exception, stack);
 
       /// Format exception to be displayed.
       AlertException alertException = AlertException.fromException(exception);
@@ -83,9 +83,9 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
       }
 
       emit(DonateSuccess(gem: event.gem));
-    } catch (exception, stack) {
+    } catch (exception) {
       /// Report crash to Crashlytics
-      crashRepository.report(exception, stack);
+      ////crashRepository.report(exception, stack);
 
       /// Format exception to be displayed.
       AlertException alertException = AlertException.fromException(exception);

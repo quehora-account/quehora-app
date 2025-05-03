@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hoora/common/decoration.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class PrivacyPage extends StatelessWidget {
   const PrivacyPage({super.key});
@@ -23,11 +22,7 @@ class PrivacyPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  icon: const Icon(
-                    CupertinoIcons.arrow_left,
-                    size: 32,
-                    color: kPrimary,
-                  ),
+                    icon:  SvgPicture.asset("assets/svg/arrow_left_svg.svg",color: kPrimary,height: 22,width: 22,),
                 ),
               ),
               const Center(
@@ -42,68 +37,71 @@ class PrivacyPage extends StatelessWidget {
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 onPressed: () async {
-                  Uri url = Uri.parse('https://hello@quehora.app');
-
-                  if (!await launchUrl(url)) {
-                    throw Exception('Could not launch $url');
-                  }
+                  // Uri url = Uri.parse('https://hello@quehora.app');
+                  //
+                  // if (!await launchUrl(url)) {
+                  //   throw Exception('Could not launch $url');
+                  // }
                 },
                 child: const Text(
-                  "Support & Aide",
+                  "Support & Aide\nhello@quehora.app",
                   style: kRegularNunito16,
                 ),
               ),
+              const SizedBox(height: kPadding20,),
               TextButton(
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 onPressed: () async {
-                  Uri url = Uri.parse(
-                      'https://rain-appeal-1ed.notion.site/Conditions-G-n-rales-d-Utilisation-de-QUEHORA-8fdde97d85c249f8aaa63d30e19ea247');
-
-                  if (!await launchUrl(url)) {
-                    throw Exception('Could not launch $url');
-                  }
+                  // Uri url = Uri.parse(
+                  //     'https://rain-appeal-1ed.notion.site/Conditions-G-n-rales-d-Utilisation-de-QUEHORA-8fdde97d85c249f8aaa63d30e19ea247');
+                  //
+                  // if (!await launchUrl(url)) {
+                  //   throw Exception('Could not launch $url');
+                  // }
                 },
                 child: const Text(
-                  "Conditions Générales d'Utilisation",
+                  "Conditions Générales d'Utilisation (CGU)\nhttps://www.notion.so/Conditions-G-n-rales-d-Utilisation-de-QUEHORA-8fdde97d85c249f8aaa63d30e19ea247",
                   style: kRegularNunito16,
                 ),
               ),
+              const SizedBox(height: kPadding20,),
               TextButton(
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 onPressed: () async {
-                  Uri url = Uri.parse(
-                      'https://rain-appeal-1ed.notion.site/Politique-de-Confidentialit-de-QUEHORA-c0d152c43773428e8e350e08514e0a0e');
-
-                  if (!await launchUrl(url)) {
-                    throw Exception('Could not launch $url');
-                  }
+                  // Uri url = Uri.parse(
+                  //     'https://rain-appeal-1ed.notion.site/Politique-de-Confidentialit-de-QUEHORA-c0d152c43773428e8e350e08514e0a0e');
+                  //
+                  // if (!await launchUrl(url)) {
+                  //   throw Exception('Could not launch $url');
+                  // }
                 },
                 child: const Text(
-                  "Politique de Confidentialité",
+                  "Politique de Confidentialité de Quehora\nhttps://www.notion.so/Politique-de-Confidentialit-de-QUEHORA-c0d152c43773428e8e350e08514e0a0e?pvs=13",
                   style: kRegularNunito16,
                 ),
               ),
+              const SizedBox(height: kPadding20,),
               TextButton(
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 onPressed: () async {
-                  Uri url = Uri.parse(
-                      'https://rain-appeal-1ed.notion.site/Mentions-l-gales-2d93c03ec6664682af0db923d4320994');
-
-                  if (!await launchUrl(url)) {
-                    throw Exception('Could not launch $url');
-                  }
+                  // Uri url = Uri.parse(
+                  //     'https://rain-appeal-1ed.notion.site/Mentions-l-gales-2d93c03ec6664682af0db923d4320994');
+                  //
+                  // if (!await launchUrl(url)) {
+                  //   throw Exception('Could not launch $url');
+                  // }
                 },
                 child: const Text(
-                  "Mentions légales",
+                  "Mentions légales\nhttps://www.notion.so/Mentions-l-gales-2d93c03ec6664682af0db923d4320994",
                   style: kRegularNunito16,
                 ),
               ),

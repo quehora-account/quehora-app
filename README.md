@@ -1,16 +1,23 @@
 # hoora
 
-A new Flutter project
 
-## Getting Started
+Enter this command in the tterminal of the android then get the sha 256 and import them in the firebase so you can get the reprenstive google-service.json files for different flavors.
+<br/>
+```./gradlew signingReport```
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+copy files through bucketss
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```gcloud storage cp -r gs://hoora-fb944.appspot.com/spot/card/ gs://hoora-staging.appspot.com/spot/card/```
+install firebase cli 
+```
+npm install -g firebase-tools
+```
+for deploying functions
+```
+firebase login
+firebase projects:list
+firebase use hoora-fb944
+firebase deploy --only functions:<function-name>
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```

@@ -84,9 +84,9 @@ class TransactionCard extends StatelessWidget {
   Color getColor() {
     TransactionType type = transaction.type;
     if (type == TransactionType.offer || type == TransactionType.donation) {
-      return kPrimary3;
+      return kFullTime;
     }
-    return kSecondary;
+    return kPrimary3;
   }
 
   String getSvgPath() {

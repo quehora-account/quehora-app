@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hoora/common/decoration.dart';
 import 'package:hoora/model/project_model.dart';
 import 'package:hoora/ui/widget/gem_progress_bar.dart';
@@ -28,11 +28,7 @@ class ThanksForDonationPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  icon: const Icon(
-                    CupertinoIcons.arrow_left,
-                    size: 32,
-                    color: kPrimary,
-                  ),
+                    icon:  SvgPicture.asset("assets/svg/arrow_left_svg.svg",color: kPrimary,height: 22,width: 22,),
                 ),
               ),
             ),

@@ -16,23 +16,30 @@ class _NavigationState extends State<Navigation> {
 
   void onPressed(int index) {
     if (index != currentIndex) {
-      currentIndex = index;
+      if(index !=2){
+        currentIndex = index;
+      }
       widget.onChanged(index);
     }
   }
 
-  Widget _buildButton(String svgPath, String svgSelectedPath, int index) {
+  Widget _buildButton(String svgPath, String svgSelectedPath, int index,String label) {
     return InkWell(
       borderRadius: BorderRadius.circular(kRadius100),
       onTap: () => onPressed(index),
       child: SizedBox(
         height: 50,
-        width: 50,
-        child: Center(
-          child: SvgPicture.asset(
-            index == currentIndex ? "assets/svg/$svgSelectedPath" : "assets/svg/$svgPath",
-            height: 26,
-          ),
+        width: 60,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            SvgPicture.asset(
+              "assets/svg/$svgPath",
+              color: index != currentIndex ? kBlackGreen:kLightGreen ,
+              height: 26,
+            ),
+            Text(label,style: index != currentIndex ? kBoldNunito10:kRegularNunito10,)
+          ],
         ),
       ),
     );
@@ -47,11 +54,11 @@ class _NavigationState extends State<Navigation> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          _buildButton("explore.svg", "explore_blue.svg", 0),
-          _buildButton("gift.svg", "gift_blue.svg", 1),
+          _buildButton("explore.svg", "explore_blue.svg", 0,"Explore"),
+          _buildButton("gift.svg", "gift_blue.svg", 1,"Cadeaux"),
           _buildMainButton(),
-          _buildButton("challenge.svg", "challenge_blue.svg", 3),
-          _buildButton("ranking.svg", "ranking_blue.svg", 4),
+          _buildButton("challenge.svg", "challenge_blue.svg", 3,"Challenge"),
+          _buildButton("ranking.svg", "ranking_blue.svg", 4,"Classement"),
         ],
       ),
     );
@@ -59,7 +66,7 @@ class _NavigationState extends State<Navigation> {
 
   Widget _buildMainButton() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Container(
           height: 65,
@@ -96,7 +103,7 @@ class _NavigationState extends State<Navigation> {
             ),
           ),
         ),
-        const SizedBox(height: 5),
+        const Text("Validation",style: kBoldNunito10,),
       ],
     );
   }
